@@ -1,0 +1,2648 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0A1628" />
+  <!-- Titles/descriptions are updated from CONFIG after load -->
+  <title>الأستاذ راشد محمد | أستاذ رياضيات ومهندس ذكاء اصطناعي</title>
+  <meta name="description" content="أستاذ رياضيات ومهندس ذكاء اصطناعي — برامج تعليمية وتكوينية في الرياضيات والإعلام الآلي." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ar_DZ" />
+  <meta property="og:title" content="الأستاذ راشد محمد | أستاذ رياضيات ومهندس ذكاء اصطناعي" />
+  <meta property="og:description" content="نرافقك في رحلتك نحو التفوق والنجاح" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="assets/logo-alrached.jpg" type="image/jpeg" />
+  <link rel="apple-touch-icon" href="assets/logo-alrached.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+  <style>
+    :root {
+      --ink: #0A1628;
+      --ink-soft: #152238;
+      --paper: #EEF0F3;
+      --paper-2: #E3E6EB;
+      --white: #FAFBFC;
+      --muted: #5B667A;
+      --line: rgba(10, 22, 40, 0.12);
+      --accent: #00B86B;
+      --accent-deep: #009956;
+      --accent-glow: rgba(0, 184, 107, 0.35);
+      --warn: #E85D4C;
+      --radius: 22px;
+      --shadow: 0 24px 60px rgba(10, 22, 40, 0.12);
+      --font-ar: "Cairo", system-ui, sans-serif;
+      --font-hand: "Aref Ruqaa", "Cairo", serif;
+      --font-en: "Space Grotesk", system-ui, sans-serif;
+      --nav-h: 72px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-ar);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
+    .container { width: min(1180px, calc(100% - 2rem)); margin-inline: auto; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* Graph-paper craft canvas */
+    .paper-bg {
+      position: relative;
+      background-color: var(--paper);
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .paper-bg::before {
+      content: "";
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(0,184,107,0.08), transparent 35%),
+        radial-gradient(circle at 85% 10%, rgba(10,22,40,0.06), transparent 40%),
+        linear-gradient(180deg, rgba(255,255,255,0.35), transparent 30%, rgba(10,22,40,0.03));
+      z-index: 0;
+    }
+    .paper-bg > * { position: relative; z-index: 1; }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; inset-inline: 0; top: 0; z-index: 100;
+      height: var(--nav-h);
+      display: flex; align-items: center;
+      backdrop-filter: blur(16px);
+      background: rgba(238, 240, 243, 0.78);
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s, background .3s, box-shadow .3s;
+    }
+    .nav.scrolled {
+      border-bottom-color: var(--line);
+      box-shadow: 0 10px 30px rgba(10,22,40,0.06);
+    }
+    .nav-inner {
+      width: min(1180px, calc(100% - 2rem));
+      margin-inline: auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .brand {
+      display: flex; align-items: center; gap: .75rem; font-weight: 800;
+    }
+    .brand-mark {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: #0b1830; color: var(--accent);
+      display: grid; place-items: center;
+      font-family: var(--font-en); font-weight: 700; font-size: .95rem;
+      box-shadow: 0 8px 24px rgba(10,22,40,0.25);
+      overflow: hidden; flex-shrink: 0;
+    }
+    .brand-mark img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .brand span { font-size: .95rem; }
+    .brand-text { display: grid; line-height: 1.2; }
+    .brand-text small {
+      font-size: .68rem; font-weight: 700; color: var(--muted);
+      font-family: var(--font-en); letter-spacing: .04em;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 1.25rem; list-style: none;
+    }
+    .nav-links a {
+      font-size: .92rem; font-weight: 700; color: var(--muted);
+      transition: color .25s;
+    }
+    .nav-links a:hover, .nav-links a:focus-visible { color: var(--ink); }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--ink); color: var(--white);
+      padding: .65rem 1.1rem; border-radius: 999px;
+      font-weight: 800; font-size: .88rem;
+      transition: transform .25s var(--ease), background .25s;
+    }
+    .nav-cta:hover { background: var(--accent-deep); transform: translateY(-2px); }
+    .nav-toggle {
+      display: none; width: 44px; height: 44px; border: 1px solid var(--line);
+      border-radius: 12px; background: var(--white); cursor: pointer;
+      align-items: center; justify-content: center; flex-direction: column; gap: 5px;
+    }
+    .nav-toggle span {
+      display: block; width: 18px; height: 2px; background: var(--ink); border-radius: 2px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+      border: none; cursor: pointer; border-radius: 999px;
+      padding: .95rem 1.55rem; font-weight: 800; font-size: .95rem;
+      transition: transform .3s var(--ease), box-shadow .3s, background .3s, color .3s;
+      position: relative; overflow: hidden;
+    }
+    .btn-primary {
+      background: var(--accent); color: var(--ink);
+      box-shadow: 0 14px 34px var(--accent-glow);
+    }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.02); background: #12d07b; }
+    .btn-secondary {
+      background: transparent; color: var(--ink);
+      border: 1.5px solid var(--ink);
+    }
+    .btn-secondary:hover {
+      background: var(--ink); color: var(--white); transform: translateY(-3px);
+    }
+    .btn-ghost {
+      background: var(--white); color: var(--ink); border: 1px solid var(--line);
+    }
+    .btn-ghost:hover { border-color: var(--ink); transform: translateY(-2px); }
+    .btn:disabled { opacity: .6; cursor: not-allowed; transform: none !important; }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      padding: calc(var(--nav-h) + 2.5rem) 0 4rem;
+      overflow: hidden;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2rem;
+      align-items: center;
+      min-height: calc(100vh - var(--nav-h) - 5rem);
+    }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: .6rem;
+      font-family: var(--font-en); font-size: .78rem; letter-spacing: .18em;
+      text-transform: uppercase; font-weight: 700; color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+    .hero-kicker::before {
+      content: ""; width: 28px; height: 3px; background: var(--accent); border-radius: 2px;
+    }
+    .hero-title-wrap { position: relative; margin-bottom: 1.25rem; }
+    .hero-title {
+      font-size: clamp(2.6rem, 7vw, 5.4rem);
+      line-height: 1.05; font-weight: 900; letter-spacing: -.02em;
+      position: relative; z-index: 2;
+    }
+    .hero-title-outline {
+      position: absolute; inset-inline-start: .08em; top: .08em;
+      font-size: clamp(2.6rem, 7vw, 5.4rem);
+      line-height: 1.05; font-weight: 900;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(10,22,40,0.18);
+      z-index: 1; pointer-events: none; user-select: none;
+    }
+    .hero-accent-bar {
+      position: absolute; inset-inline-end: -1.2rem; top: -8%;
+      width: 10px; height: 118%;
+      background: var(--accent); border-radius: 8px;
+      box-shadow: 0 12px 30px var(--accent-glow);
+      z-index: 0;
+    }
+    .hero-roles {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      font-weight: 700; color: var(--muted); margin-bottom: 1rem;
+    }
+    .hero-headline {
+      font-size: clamp(1.25rem, 2.8vw, 1.75rem);
+      font-weight: 800; max-width: 28ch; margin-bottom: 1rem;
+    }
+    .hero-desc {
+      color: var(--muted); max-width: 46ch; margin-bottom: 1.75rem; font-size: 1.02rem;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .85rem; margin-bottom: 1.75rem; }
+    .hero-social { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; }
+
+    .hero-stage {
+      position: relative; height: min(620px, 78vh);
+      display: grid; place-items: center;
+      perspective: 1200px;
+    }
+    .stage-ring {
+      position: absolute; width: min(420px, 78%); aspect-ratio: 1;
+      border: 1px dashed rgba(10,22,40,0.2); border-radius: 50%;
+      animation: spin 40s linear infinite;
+    }
+    .stage-ring.inner {
+      width: min(280px, 55%); border-style: solid; border-color: rgba(0,184,107,0.35);
+      animation-direction: reverse; animation-duration: 28s;
+    }
+    .central-subject {
+      width: min(320px, 72%); aspect-ratio: 4 / 5; position: relative;
+      transform-style: preserve-3d;
+      animation: floatY 5.5s ease-in-out infinite;
+      z-index: 3;
+    }
+    .central-core {
+      width: 100%; height: 100%; border-radius: 28px;
+      background:
+        radial-gradient(circle at 30% 30%, #1ed77a, transparent 45%),
+        linear-gradient(145deg, #0A1628 0%, #163056 55%, #00B86B 140%);
+      box-shadow:
+        0 30px 60px rgba(10,22,40,0.32),
+        0 0 0 1px rgba(255,255,255,0.08);
+      position: relative; overflow: hidden;
+    }
+    .central-core.has-photo {
+      background: #0b1830;
+    }
+    .central-core.has-photo::after { display: none; }
+    .central-core::after {
+      content: "∑";
+      position: absolute; inset: 0; display: grid; place-items: center;
+      font-family: var(--font-en); font-size: 5rem; font-weight: 700;
+      color: rgba(255,255,255,0.88); text-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    .central-core img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center top;
+      display: block;
+    }
+    .logo-badge {
+      position: absolute; width: 118px; height: 118px; border-radius: 50%;
+      overflow: hidden; border: 3px solid var(--white);
+      box-shadow: var(--shadow); z-index: 5;
+      inset-inline-start: 2%; bottom: 14%;
+      transform: rotate(-6deg);
+      background: #0b1830;
+      animation: floatY 6.2s ease-in-out infinite;
+      animation-delay: -1s;
+    }
+    .logo-badge img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
+    .float-card {
+      position: absolute; background: var(--white);
+      border: 1px solid var(--line); border-radius: 18px;
+      padding: .85rem 1rem; box-shadow: var(--shadow);
+      font-family: var(--font-en); font-weight: 700; font-size: .85rem;
+      backdrop-filter: blur(8px);
+      animation: floatY 6s ease-in-out infinite;
+    }
+    .float-card.math { top: 8%; inset-inline-end: 4%; color: var(--ink); animation-delay: -.8s; }
+    .float-card.ai { bottom: 12%; inset-inline-end: 10%; animation-delay: -2s; background: var(--ink); color: var(--accent); }
+    .float-card.edu { top: 22%; inset-inline-start: 0; animation-delay: -1.4s; }
+    .float-card .mini { display: block; font-size: .68rem; opacity: .55; font-weight: 500; margin-top: .15rem; }
+    .stamp {
+      position: absolute; top: 4%; inset-inline-start: 12%;
+      width: 110px; height: 110px; border-radius: 50%;
+      border: 2px dashed var(--accent); display: grid; place-items: center;
+      transform: rotate(-18deg); animation: spin 24s linear infinite;
+      background: rgba(255,255,255,0.55);
+    }
+    .stamp span {
+      font-size: .62rem; font-weight: 800; text-align: center; line-height: 1.3;
+      color: var(--accent-deep); max-width: 70px;
+    }
+    .crosshair {
+      position: absolute; width: 18px; height: 18px; opacity: .35;
+    }
+    .crosshair::before, .crosshair::after {
+      content: ""; position: absolute; background: var(--ink);
+    }
+    .crosshair::before { width: 100%; height: 1px; top: 50%; }
+    .crosshair::after { height: 100%; width: 1px; inset-inline-start: 50%; }
+
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulseSoft {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    /* ===== SECTION CHROME ===== */
+    .section { padding: 6rem 0; }
+    .section-dark {
+      background: var(--ink);
+      color: var(--white);
+      position: relative; overflow: hidden;
+    }
+    .section-dark::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: linear-gradient(180deg, black, transparent 90%);
+    }
+    .section-head {
+      display: grid; gap: .85rem; margin-bottom: 2.75rem;
+      max-width: 46rem;
+    }
+    .eyebrow {
+      font-family: var(--font-en); font-size: .75rem; letter-spacing: .2em;
+      text-transform: uppercase; font-weight: 700; color: var(--accent);
+    }
+    .section-title {
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      line-height: 1.15; font-weight: 900;
+    }
+    .section-title .outline {
+      color: transparent; -webkit-text-stroke: 1.5px currentColor; opacity: .35;
+    }
+    .section-lead { color: var(--muted); font-size: 1.05rem; }
+    .section-dark .section-lead { color: rgba(255,255,255,0.68); }
+
+    /* ===== ABOUT ===== */
+    .about-layout {
+      display: grid; grid-template-columns: minmax(240px, 0.9fr) 1.1fr; gap: 1.5rem; align-items: start;
+      margin-bottom: 1.25rem;
+    }
+    #about {
+      padding-bottom: 2.5rem;
+    }
+    #courses {
+      padding-top: 1.5rem !important;
+    }
+    .about-media {
+      display: grid; gap: 1rem; align-content: start;
+    }
+    .about-photo {
+      border-radius: calc(var(--radius) + 8px);
+      overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 24px 50px rgba(0,0,0,0.35);
+      aspect-ratio: 4 / 5; background: #0b1830;
+    }
+    .about-photo img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center top;
+      display: block;
+    }
+    .about-logo-card {
+      display: flex; align-items: center; gap: 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius); padding: .9rem 1rem;
+    }
+    .about-logo-card img {
+      width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+      background: #0b1830; flex-shrink: 0;
+    }
+    .about-logo-card strong { display: block; color: var(--white); margin-bottom: .2rem; }
+    .about-logo-card span { color: rgba(255,255,255,0.65); font-size: .88rem; }
+
+    /* Chalkboard */
+    .chalk-board {
+      position: relative;
+      min-height: 100%;
+      border-radius: 18px;
+      padding: 1.6rem 1.5rem 1.4rem;
+      color: #f4f1e4;
+      background:
+        radial-gradient(ellipse at 20% 15%, rgba(255,255,255,0.06), transparent 40%),
+        radial-gradient(ellipse at 80% 80%, rgba(0,0,0,0.25), transparent 45%),
+        linear-gradient(145deg, #1f3d2a 0%, #163222 45%, #0f2418 100%);
+      box-shadow:
+        inset 0 0 0 10px #5a3a1e,
+        inset 0 0 0 14px #3d2714,
+        0 22px 50px rgba(0,0,0,0.45);
+      overflow: hidden;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .chalk-board::before {
+      content: "";
+      position: absolute; inset: 14px;
+      border-radius: 8px;
+      pointer-events: none;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+      opacity: 0.18; mix-blend-mode: soft-light;
+    }
+    .chalk-board::after {
+      content: "";
+      position: absolute;
+      width: 54px; height: 10px; border-radius: 999px;
+      background: linear-gradient(90deg, #f7f2df, #e8dfc2);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+      inset-inline-end: 1.6rem; bottom: 1.1rem;
+      transform: rotate(-8deg);
+      opacity: 0.9;
+    }
+    .chalk-top {
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      position: relative; z-index: 1;
+    }
+    .chalk-label {
+      font-family: var(--font-en); font-size: .72rem; letter-spacing: .18em;
+      text-transform: uppercase; color: rgba(244,241,228,0.55); font-weight: 700;
+    }
+    .chalk-erasers {
+      display: flex; gap: .35rem;
+    }
+    .chalk-erasers span {
+      width: 18px; height: 8px; border-radius: 3px;
+      background: rgba(244,241,228,0.35);
+    }
+    .chalk-erasers span:nth-child(2) { background: #7ec8ff; opacity: .7; }
+    .chalk-erasers span:nth-child(3) { background: #ffb4a2; opacity: .7; }
+    .chalk-title {
+      position: relative; z-index: 1;
+      font-family: var(--font-hand);
+      font-size: clamp(1.85rem, 3.6vw, 2.55rem);
+      font-weight: 700; line-height: 1.5;
+      color: #fff8e7;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.28);
+      margin: 0;
+      letter-spacing: 0.01em;
+    }
+    .chalk-lines {
+      position: relative; z-index: 1;
+      display: grid; gap: .7rem;
+    }
+    .chalk-line {
+      font-family: var(--font-hand);
+      font-size: clamp(1.2rem, 2.35vw, 1.55rem);
+      line-height: 1.75; color: #f0ebda;
+      opacity: 0;
+      clip-path: inset(0 0 0 100%);
+      filter: blur(2px);
+      transition: none;
+      text-shadow: 0.5px 0.5px 0 rgba(255,255,255,0.08);
+    }
+    .chalk-line:nth-child(odd) { transform: rotate(-0.4deg); }
+    .chalk-line:nth-child(even) { transform: rotate(0.35deg); }
+    .chalk-doodles {
+      position: relative; z-index: 1;
+      flex: 1;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
+      gap: .75rem 1.25rem;
+      min-height: 4.5rem;
+      padding: .35rem 0 .2rem;
+      opacity: 0;
+    }
+    .chalk-board.is-written .chalk-doodles {
+      animation: chipIn .6s ease forwards;
+      animation-delay: 2.35s;
+    }
+    .chalk-doodle {
+      font-family: var(--font-en);
+      font-size: clamp(1.35rem, 2.8vw, 1.9rem);
+      font-weight: 700;
+      color: rgba(244,241,228,0.72);
+      border: 1.5px dashed rgba(244,241,228,0.28);
+      border-radius: 14px;
+      padding: .45rem .75rem;
+      transform: rotate(-6deg);
+      text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+    }
+    .chalk-doodle:nth-child(2) { transform: rotate(5deg); color: #b8f0ff; }
+    .chalk-doodle:nth-child(3) { transform: rotate(-3deg); color: #d8ffc8; }
+    .chalk-doodle:nth-child(4) { transform: rotate(7deg); color: #ffe2b8; }
+    .chalk-line.writing {
+      animation: chalkWrite 1.15s steps(18, end) forwards;
+    }
+    .chalk-line:nth-child(1).writing { animation-delay: .05s; }
+    .chalk-line:nth-child(2).writing { animation-delay: .55s; }
+    .chalk-line:nth-child(3).writing { animation-delay: 1.05s; }
+    .chalk-line:nth-child(4).writing { animation-delay: 1.55s; }
+    .chalk-line:nth-child(5).writing { animation-delay: 2.05s; }
+    @keyframes chalkWrite {
+      0% { opacity: 0; clip-path: inset(0 0 0 100%); filter: blur(2px); }
+      18% { opacity: .85; filter: blur(1px); }
+      100% { opacity: 1; clip-path: inset(0 0 0 0); filter: blur(0); }
+    }
+    [dir="rtl"] .chalk-line {
+      clip-path: inset(0 100% 0 0);
+    }
+    [dir="rtl"] .chalk-line.writing {
+      animation-name: chalkWriteRtl;
+    }
+    @keyframes chalkWriteRtl {
+      0% { opacity: 0; clip-path: inset(0 100% 0 0); filter: blur(2px); }
+      18% { opacity: .85; filter: blur(1px); }
+      100% { opacity: 1; clip-path: inset(0 0 0 0); filter: blur(0); }
+    }
+    .chalk-rule {
+      height: 1px; width: 100%;
+      background: linear-gradient(90deg, transparent, rgba(244,241,228,0.28), transparent);
+      margin: .15rem 0; position: relative; z-index: 1;
+    }
+    .chalk-foot {
+      position: relative; z-index: 1;
+      display: flex; flex-wrap: wrap; gap: .75rem;
+      align-items: flex-end; justify-content: space-between;
+      padding-bottom: .55rem;
+      margin-top: auto;
+    }
+    .chalk-sign {
+      font-family: var(--font-hand); font-size: 1.2rem; color: #d7f5ff;
+      opacity: 0;
+    }
+    .chalk-sign.writing {
+      animation: chalkWriteRtl 1s ease forwards;
+      animation-delay: 2.5s;
+    }
+    .about-chips {
+      display: flex; flex-wrap: wrap; gap: .45rem;
+    }
+    .chip {
+      background: rgba(244,241,228,0.1);
+      border: 1px dashed rgba(244,241,228,0.35);
+      color: #f4f1e4;
+      padding: .4rem .75rem; border-radius: 999px;
+      font-size: .8rem; font-weight: 700;
+      opacity: 0; transform: translateY(8px);
+    }
+    .chalk-board.is-written .chip {
+      animation: chipIn .45s ease forwards;
+    }
+    .chalk-board.is-written .chip:nth-child(1) { animation-delay: 2.7s; }
+    .chalk-board.is-written .chip:nth-child(2) { animation-delay: 2.85s; }
+    .chalk-board.is-written .chip:nth-child(3) { animation-delay: 3s; }
+    .chalk-board.is-written .chip:nth-child(4) { animation-delay: 3.15s; }
+    @keyframes chipIn {
+      to { opacity: 1; transform: none; }
+    }
+    .reduced .chalk-line,
+    .reduced .chalk-sign,
+    .reduced .chip {
+      opacity: 1 !important; clip-path: none !important; filter: none !important;
+      transform: none !important; animation: none !important;
+    }
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .85rem;
+      margin-top: .25rem;
+    }
+    .timeline-item {
+      display: grid; grid-template-columns: 56px 1fr; gap: .85rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius); padding: 1rem 1.1rem;
+      transition: transform .35s var(--ease), border-color .35s, background .35s;
+      opacity: 1;
+      transform: none;
+    }
+    .timeline-item:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,184,107,0.45);
+      background: rgba(0,184,107,0.06);
+    }
+    .timeline-idx {
+      font-family: var(--font-en); font-weight: 700; font-size: 1.4rem; color: var(--accent);
+    }
+    .timeline-item h3 { font-size: 1.1rem; margin-bottom: .35rem; }
+    .timeline-item p { color: rgba(255,255,255,0.68); font-size: .95rem; }
+
+    /* ===== COURSES ===== */
+    .cat-tabs {
+      display: inline-flex; gap: .4rem; padding: .35rem;
+      background: rgba(255,255,255,0.06); border-radius: 999px; margin-bottom: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .cat-tab {
+      border: none; background: transparent; color: rgba(255,255,255,0.7);
+      padding: .7rem 1.2rem; border-radius: 999px; cursor: pointer; font-weight: 800;
+      transition: background .25s, color .25s, transform .25s;
+    }
+    .cat-tab.active { background: var(--accent); color: var(--ink); }
+
+    .course-slider {
+      display: grid;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+    .course-viewport {
+      position: relative;
+      height: min(560px, 74vh);
+      margin-inline: -0.5rem;
+      overflow: visible;
+      perspective: 1400px;
+      touch-action: pan-y;
+      user-select: none;
+    }
+    .course-track {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+    }
+    .course-card {
+      --card-accent: var(--accent);
+      --fan-x: 0px;
+      --fan-y: 0px;
+      --fan-rot: 0deg;
+      --fan-scale: 0.82;
+      --fan-z: 1;
+      position: absolute;
+      top: 46%;
+      left: 50%;
+      width: min(270px, 68vw);
+      height: min(400px, 58vh);
+      margin: 0;
+      border: none;
+      border-radius: 26px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      color: var(--white);
+      background: #101b2e;
+      box-shadow: 0 24px 50px rgba(0,0,0,0.42);
+      transform-origin: 50% 130%;
+      transform:
+        translate(-50%, -50%)
+        translateX(var(--fan-x))
+        translateY(var(--fan-y))
+        rotate(var(--fan-rot))
+        scale(var(--fan-scale));
+      z-index: var(--fan-z);
+      transition:
+        transform .75s cubic-bezier(.22,1,.36,1),
+        box-shadow .75s cubic-bezier(.22,1,.36,1),
+        filter .75s ease,
+        opacity .55s ease;
+      filter: brightness(0.78) saturate(0.85);
+      opacity: 0.92;
+      direction: rtl;
+      -webkit-tap-highlight-color: transparent;
+      will-change: transform;
+    }
+    .course-card.is-active {
+      filter: brightness(1) saturate(1);
+      opacity: 1;
+      box-shadow:
+        0 36px 72px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.1);
+      cursor: default;
+    }
+    .course-card.is-hidden-fan {
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+    }
+    .course-card:not(.is-active) .course-body {
+      opacity: 0;
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      border: none;
+      pointer-events: none;
+    }
+    .course-card:not(.is-active) .course-cover {
+      flex: 1;
+    }
+    .course-card.is-active .course-body {
+      opacity: 1;
+      max-height: 220px;
+      transition: opacity .45s ease .1s, max-height .55s ease;
+    }
+    .course-cover {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 30% 18%, color-mix(in srgb, var(--card-accent) 45%, transparent), transparent 52%),
+        linear-gradient(160deg, #1a2b46 0%, #0d1628 55%, color-mix(in srgb, var(--card-accent) 40%, #0a1220));
+    }
+    .course-cover::before {
+      content: attr(data-glyph);
+      position: absolute; inset-inline-end: .7rem; bottom: -.35rem;
+      font-family: var(--font-en); font-size: 7rem; font-weight: 700;
+      color: rgba(255,255,255,0.14); line-height: 1;
+    }
+    .course-cover-badge {
+      position: absolute; top: 1rem; inset-inline-start: 1rem;
+      background: rgba(10,22,40,0.72); color: var(--white);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: .3rem .7rem; border-radius: 999px; font-size: .72rem; font-weight: 800;
+      backdrop-filter: blur(8px);
+    }
+    .course-index {
+      position: absolute; bottom: 1rem; inset-inline-end: 1rem;
+      font-family: var(--font-en); font-size: .78rem; font-weight: 700;
+      color: rgba(255,255,255,0.55); letter-spacing: .08em;
+    }
+    .course-body {
+      padding: 1.05rem 1.1rem 1.2rem;
+      display: grid; gap: .55rem;
+      background: linear-gradient(180deg, rgba(8,16,30,0.92), #0a1424);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .course-body h3 {
+      font-size: 1.08rem;
+      line-height: 1.35; font-weight: 900;
+    }
+    .course-body p {
+      color: rgba(255,255,255,0.68); font-size: .86rem;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .course-meta {
+      display: flex; flex-wrap: wrap; gap: .35rem;
+    }
+    .meta-pill {
+      font-size: .68rem; font-weight: 700;
+      padding: .22rem .5rem; border-radius: 999px;
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.82);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .course-actions { margin-top: .15rem; }
+    .course-actions .btn {
+      width: 100%;
+      padding: .75rem 1rem;
+      font-size: .88rem;
+    }
+
+    .course-controls {
+      display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .85rem;
+    }
+    .course-nav-btn {
+      width: 46px; height: 46px; border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05); color: var(--white);
+      display: grid; place-items: center; cursor: pointer;
+      transition: background .25s, transform .25s, border-color .25s;
+    }
+    .course-nav-btn:hover {
+      background: var(--accent); color: var(--ink); border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .course-nav-btn:disabled {
+      opacity: .35; cursor: not-allowed; transform: none;
+    }
+    .course-dots {
+      display: flex; flex-direction: row; gap: .45rem; align-items: center;
+      max-width: min(60vw, 320px); overflow: auto; padding: .2rem;
+      scrollbar-width: none;
+    }
+    .course-dots::-webkit-scrollbar { display: none; }
+    .course-dot {
+      width: 9px; height: 9px; border-radius: 999px;
+      border: none; padding: 0; cursor: pointer;
+      background: rgba(255,255,255,0.25);
+      transition: transform .25s, background .25s, width .25s;
+    }
+    .course-dot.active {
+      background: var(--accent);
+      width: 22px;
+    }
+    .course-counter {
+      font-family: var(--font-en); font-size: .78rem; font-weight: 700;
+      color: rgba(255,255,255,0.55); letter-spacing: .06em;
+      direction: ltr;
+    }
+
+    /* ===== WHY ===== */
+    #why {
+      position: relative;
+      overflow: hidden;
+      padding-top: 4.5rem;
+      padding-bottom: 4.5rem;
+    }
+    .why-float {
+      position: absolute; pointer-events: none; z-index: 0;
+      font-family: var(--font-en); font-weight: 700;
+      color: rgba(10, 22, 40, 0.08);
+      animation: floatY 6s ease-in-out infinite;
+      user-select: none;
+    }
+    .why-float.f1 { top: 12%; inset-inline-start: 6%; font-size: 3rem; animation-delay: -.4s; }
+    .why-float.f2 { top: 28%; inset-inline-end: 8%; font-size: 2.4rem; animation-delay: -1.2s; color: rgba(0,184,107,0.14); }
+    .why-float.f3 { bottom: 18%; inset-inline-start: 12%; font-size: 2.8rem; animation-delay: -2s; }
+    .why-float.f4 { bottom: 12%; inset-inline-end: 14%; font-size: 2.2rem; animation-delay: -2.8s; color: rgba(0,184,107,0.12); }
+    #why .container { position: relative; z-index: 1; }
+    .why-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem;
+    }
+    .why-card {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 4px);
+      padding: 1.45rem 1.3rem 1.5rem;
+      transition: transform .35s var(--ease), box-shadow .35s, border-color .35s;
+      position: relative; overflow: hidden;
+      opacity: 0;
+      transform: translateY(28px) scale(0.98);
+      box-shadow: 0 10px 28px rgba(10,22,40,0.05);
+    }
+    .why-card::before {
+      content: "";
+      position: absolute; inset-inline-start: 0; top: 0; bottom: 0;
+      width: 4px; background: var(--accent);
+      transform: scaleY(0); transform-origin: top;
+      transition: transform .5s var(--ease);
+    }
+    #why.is-on .why-card {
+      animation: whyIn .7s var(--ease) forwards;
+    }
+    #why.is-on .why-card:nth-child(1) { animation-delay: .05s; }
+    #why.is-on .why-card:nth-child(2) { animation-delay: .15s; }
+    #why.is-on .why-card:nth-child(3) { animation-delay: .25s; }
+    #why.is-on .why-card:nth-child(4) { animation-delay: .35s; }
+    #why.is-on .why-card:nth-child(5) { animation-delay: .45s; }
+    #why.is-on .why-card:nth-child(6) { animation-delay: .55s; }
+    @keyframes whyIn {
+      to { opacity: 1; transform: none; }
+    }
+    .why-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow);
+      border-color: rgba(0,184,107,0.35);
+    }
+    .why-card:hover::before { transform: scaleY(1); }
+    .why-icon {
+      width: 58px; height: 58px; border-radius: 18px;
+      background: linear-gradient(145deg, rgba(0,184,107,0.16), rgba(0,184,107,0.05));
+      color: var(--accent-deep);
+      display: grid; place-items: center; margin-bottom: 1.05rem;
+      border: 1px solid rgba(0,184,107,0.18);
+    }
+    .why-icon svg {
+      width: 28px; height: 28px;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .why-icon svg .draw {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-dasharray: 80;
+      stroke-dashoffset: 80;
+    }
+    #why.is-on .why-icon svg .draw {
+      animation: iconDraw 1.1s ease forwards;
+    }
+    #why.is-on .why-card:nth-child(1) .draw { animation-delay: .2s; }
+    #why.is-on .why-card:nth-child(2) .draw { animation-delay: .3s; }
+    #why.is-on .why-card:nth-child(3) .draw { animation-delay: .4s; }
+    #why.is-on .why-card:nth-child(4) .draw { animation-delay: .5s; }
+    #why.is-on .why-card:nth-child(5) .draw { animation-delay: .6s; }
+    #why.is-on .why-card:nth-child(6) .draw { animation-delay: .7s; }
+    @keyframes iconDraw {
+      to { stroke-dashoffset: 0; }
+    }
+    .why-card h3 {
+      font-size: 1.12rem; margin-bottom: .45rem; font-weight: 800;
+    }
+    .why-card p { color: var(--muted); font-size: .94rem; line-height: 1.65; }
+    .why-num {
+      position: absolute; inset-inline-end: 1rem; top: 1rem;
+      font-family: var(--font-en); font-size: .78rem; font-weight: 700;
+      color: rgba(10,22,40,0.22); letter-spacing: .08em;
+    }
+    .reduced #why .why-card,
+    .reduced #why .why-icon svg .draw {
+      opacity: 1 !important; transform: none !important;
+      animation: none !important; stroke-dashoffset: 0 !important;
+    }
+
+    /* ===== FORM ===== */
+    .register-shell {
+      display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 1.5rem; align-items: start;
+    }
+    .register-intro {
+      background: var(--ink); color: var(--white);
+      border-radius: calc(var(--radius) + 10px);
+      padding: 2rem 1.6rem; position: sticky; top: calc(var(--nav-h) + 1rem);
+      overflow: hidden;
+    }
+    .register-intro::after {
+      content: "01";
+      position: absolute; inset-inline-end: .4rem; bottom: -.6rem;
+      font-family: var(--font-en); font-size: 8rem; font-weight: 700;
+      color: rgba(255,255,255,0.05); line-height: 1;
+    }
+    .form-card {
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 10px);
+      padding: 1.5rem; box-shadow: var(--shadow);
+    }
+    .progress {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-bottom: 1.5rem;
+    }
+    .progress-step {
+      height: 6px; border-radius: 999px; background: var(--paper-2); overflow: hidden;
+    }
+    .progress-step span {
+      display: block; height: 100%; width: 0; background: var(--accent);
+      transition: width .4s var(--ease);
+    }
+    .progress-step.active span, .progress-step.done span { width: 100%; }
+    .progress-labels {
+      display: flex; justify-content: space-between; gap: .5rem;
+      margin-bottom: 1.25rem; font-size: .8rem; font-weight: 700; color: var(--muted);
+    }
+    .progress-labels .on { color: var(--ink); }
+    .form-step { display: none; animation: fadeUp .45s var(--ease); }
+    .form-step.active { display: grid; gap: 1rem; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+    .field { display: grid; gap: .4rem; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { font-weight: 750; font-size: .9rem; }
+    .req { color: var(--warn); }
+    .field input, .field select, .field textarea {
+      width: 100%; border: 1.5px solid var(--line); border-radius: 14px;
+      padding: .85rem 1rem; background: var(--paper); color: var(--ink);
+      transition: border-color .25s, box-shadow .25s, background .25s;
+      outline: none;
+    }
+    .field textarea { min-height: 110px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--accent); background: var(--white);
+      box-shadow: 0 0 0 4px rgba(0,184,107,0.15);
+    }
+    .field .error {
+      color: var(--warn); font-size: .8rem; font-weight: 700; min-height: 1.1em;
+    }
+    .check-row {
+      display: flex; gap: .7rem; align-items: flex-start;
+      background: var(--paper); border-radius: 14px; padding: .9rem 1rem;
+      border: 1px solid var(--line);
+    }
+    .check-row input { margin-top: .25rem; width: 18px; height: 18px; accent-color: var(--accent); }
+    .form-nav {
+      display: flex; justify-content: space-between; gap: .75rem; margin-top: .5rem; flex-wrap: wrap;
+    }
+    .summary {
+      background: var(--paper); border-radius: 16px; padding: 1rem 1.1rem;
+      display: grid; gap: .55rem; border: 1px solid var(--line);
+    }
+    .summary-row {
+      display: flex; justify-content: space-between; gap: 1rem;
+      font-size: .92rem; border-bottom: 1px dashed var(--line); padding-bottom: .45rem;
+    }
+    .summary-row:last-child { border: none; padding-bottom: 0; }
+    .summary-row span:first-child { color: var(--muted); font-weight: 700; }
+    .summary-row span:last-child { font-weight: 800; text-align: start; }
+    .form-status {
+      display: none; margin-top: .75rem; padding: .85rem 1rem; border-radius: 14px;
+      font-weight: 700; font-size: .92rem;
+    }
+    .form-status.show { display: block; }
+    .form-status.ok { background: rgba(0,184,107,0.12); color: var(--accent-deep); }
+    .form-status.err { background: rgba(232,93,76,0.12); color: var(--warn); }
+    .success-screen {
+      display: none; text-align: center; padding: 2rem 1rem; gap: 1rem;
+    }
+    .success-screen.show { display: grid; animation: fadeUp .5s var(--ease); }
+    .success-icon {
+      width: 78px; height: 78px; margin-inline: auto; border-radius: 50%;
+      background: rgba(0,184,107,0.15); color: var(--accent-deep);
+      display: grid; place-items: center;
+      animation: pulseSoft 2.4s ease-in-out infinite;
+    }
+    .success-screen h3 { font-size: 1.6rem; }
+    .success-screen p { color: var(--muted); }
+    .ref-code {
+      display: inline-flex; margin-inline: auto; margin-top: .4rem;
+      background: var(--ink); color: var(--accent);
+      padding: .55rem 1rem; border-radius: 999px;
+      font-family: var(--font-en); font-weight: 700; letter-spacing: .04em;
+    }
+
+    /* ===== SOCIAL ===== */
+    .social-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;
+    }
+    .social-card {
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 1.35rem 1rem;
+      display: grid; place-items: center; gap: .75rem; text-align: center;
+      transition: transform .35s var(--ease), box-shadow .35s, border-color .35s;
+      min-height: 150px;
+    }
+    .social-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow);
+      border-color: color-mix(in srgb, var(--brand, var(--accent)) 45%, var(--line));
+    }
+    .social-icon {
+      width: 56px; height: 56px; border-radius: 18px;
+      display: grid; place-items: center;
+      background: color-mix(in srgb, var(--brand) 14%, white);
+      color: var(--brand);
+      animation: floatY 5s ease-in-out infinite;
+    }
+    .social-card:nth-child(2) .social-icon { animation-delay: -.7s; }
+    .social-card:nth-child(3) .social-icon { animation-delay: -1.4s; }
+    .social-card:nth-child(4) .social-icon { animation-delay: -2.1s; }
+    .social-card:nth-child(5) .social-icon { animation-delay: -2.8s; }
+    .social-card strong { font-size: .95rem; }
+    .social-card span { font-size: .8rem; color: var(--muted); font-weight: 600; }
+
+    /* Floating WhatsApp */
+    .fab-wa {
+      position: fixed; inset-inline-end: 1.25rem; bottom: 1.25rem; z-index: 90;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: #25D366; color: white;
+      display: grid; place-items: center;
+      box-shadow: 0 16px 36px rgba(37,211,102,0.4);
+      transition: transform .3s var(--ease);
+      animation: pulseSoft 2.8s ease-in-out infinite;
+    }
+    .fab-wa[hidden] { display: none !important; }
+    .fab-wa:hover { transform: scale(1.08); }
+
+    /* Social-proof signup toast (physical left) */
+    .signup-toast[hidden] { display: none !important; }
+    .signup-toast {
+      position: fixed;
+      left: 1.15rem;
+      bottom: 5.6rem;
+      z-index: 95;
+      width: min(320px, calc(100vw - 2rem));
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: .75rem;
+      align-items: center;
+      padding: .85rem .9rem;
+      border-radius: 18px;
+      background: rgba(250, 251, 252, 0.96);
+      border: 1px solid rgba(10, 22, 40, 0.1);
+      box-shadow: 0 18px 44px rgba(10, 22, 40, 0.18);
+      backdrop-filter: blur(12px);
+      color: var(--ink);
+      direction: rtl;
+      transform: translateY(18px) scale(0.96);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .45s var(--ease), opacity .45s ease;
+    }
+    .signup-toast.is-visible {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .signup-toast-avatar {
+      width: 44px; height: 44px; border-radius: 14px;
+      display: grid; place-items: center;
+      font-family: var(--font-en); font-weight: 700; font-size: .95rem;
+      color: var(--white);
+      background: linear-gradient(145deg, var(--accent), var(--accent-deep));
+      box-shadow: 0 8px 18px var(--accent-glow);
+      flex-shrink: 0;
+    }
+    .signup-toast-body { min-width: 0; }
+    .signup-toast-body strong {
+      display: block; font-size: .9rem; font-weight: 800; line-height: 1.35;
+    }
+    .signup-toast-body span {
+      display: block; font-size: .78rem; color: var(--muted); font-weight: 600; margin-top: .15rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .signup-toast-meta {
+      display: block; font-size: .72rem; color: var(--accent-deep); font-weight: 800; margin-top: .2rem;
+    }
+    .signup-toast-close {
+      width: 28px; height: 28px; border: none; border-radius: 999px;
+      background: rgba(10,22,40,0.06); color: var(--muted);
+      cursor: pointer; display: grid; place-items: center; flex-shrink: 0;
+      transition: background .2s, color .2s;
+    }
+    .signup-toast-close:hover { background: rgba(10,22,40,0.12); color: var(--ink); }
+
+    /* Hot take + free live workshop */
+    .hot-take {
+      position: relative;
+      overflow: hidden;
+      border-radius: calc(var(--radius) + 6px);
+      padding: clamp(1.6rem, 4vw, 2.4rem);
+      background:
+        radial-gradient(circle at 12% 20%, rgba(0,184,107,0.22), transparent 42%),
+        radial-gradient(circle at 88% 80%, rgba(232,93,76,0.16), transparent 40%),
+        linear-gradient(135deg, #0d1a2e 0%, #12233d 55%, #0a1628 100%);
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 28px 60px rgba(10,22,40,0.28);
+      display: grid;
+      gap: 1.15rem;
+      align-items: center;
+    }
+    .hot-take::before {
+      content: "";
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 36px 36px;
+      opacity: .55;
+    }
+    .hot-take > * { position: relative; z-index: 1; }
+    .hot-take-badge {
+      display: inline-flex; align-items: center; gap: .45rem;
+      width: fit-content;
+      padding: .35rem .75rem; border-radius: 999px;
+      background: rgba(232,93,76,0.16);
+      border: 1px solid rgba(232,93,76,0.35);
+      color: #ffb4ab;
+      font-family: var(--font-en);
+      font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .hot-take-badge::before {
+      content: "";
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--warn);
+      box-shadow: 0 0 0 4px rgba(232,93,76,0.25);
+      animation: pulseSoft 1.8s ease-in-out infinite;
+    }
+    .hot-take h3 {
+      font-size: clamp(1.35rem, 3.2vw, 1.85rem);
+      line-height: 1.35; font-weight: 900; max-width: 28ch;
+    }
+    .hot-take p {
+      color: rgba(255,255,255,0.72);
+      font-size: 1rem; max-width: 48ch;
+    }
+    .hot-take-actions {
+      display: flex; flex-wrap: wrap; gap: .75rem; align-items: center;
+      margin-top: .25rem;
+    }
+    .hot-take .btn-primary {
+      background: var(--accent); color: var(--ink);
+      box-shadow: 0 12px 28px var(--accent-glow);
+    }
+    .hot-take .btn-primary:hover {
+      background: #12c47a;
+    }
+    .hot-take-note {
+      font-size: .82rem; font-weight: 700;
+      color: rgba(255,255,255,0.55);
+    }
+    @media (min-width: 820px) {
+      .hot-take {
+        grid-template-columns: 1.4fr auto;
+        grid-template-rows: auto auto auto;
+      }
+      .hot-take-badge { grid-column: 1; }
+      .hot-take h3 { grid-column: 1; }
+      .hot-take p { grid-column: 1; }
+      .hot-take-actions {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        margin-top: 0;
+        min-width: 220px;
+      }
+      .hot-take-actions .btn { width: 100%; justify-content: center; }
+      .hot-take-note { text-align: center; }
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--ink); color: rgba(255,255,255,0.78);
+      padding: 3.5rem 0 2rem;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .footer h3, .footer h4 { color: var(--white); margin-bottom: .85rem; }
+    .footer p { font-size: .95rem; max-width: 36ch; }
+    .footer ul { list-style: none; display: grid; gap: .55rem; }
+    .footer a:hover { color: var(--accent); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 1.25rem; display: flex; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; font-size: .85rem;
+    }
+    .footer-social { display: flex; gap: .6rem; }
+
+    /* Reveal helpers */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+    .reveal.in { opacity: 1; transform: none; }
+    .reduced .reveal { opacity: 1; transform: none; transition: none; }
+
+    /* Mobile nav drawer */
+    .mobile-drawer {
+      display: none; position: fixed; inset: var(--nav-h) 0 0 0; z-index: 99;
+      background: rgba(238,240,243,0.96); backdrop-filter: blur(12px);
+      padding: 1.5rem; flex-direction: column; gap: 1rem;
+    }
+    .mobile-drawer.open { display: flex; }
+    .mobile-drawer a {
+      font-size: 1.2rem; font-weight: 800; padding: .85rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .hero-grid, .about-layout, .register-shell, .footer-grid { grid-template-columns: 1fr; }
+      .timeline { grid-template-columns: 1fr; }
+      .course-viewport { height: min(480px, 68vh); }
+      .course-card {
+        width: min(240px, 70vw);
+        height: min(360px, 54vh);
+      }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .social-grid { grid-template-columns: repeat(3, 1fr); }
+      .register-intro { position: static; }
+      .hero-accent-bar { display: none; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-toggle { display: inline-flex; }
+      .hero-stage { height: 460px; margin-top: 1rem; }
+    }
+    @media (max-width: 640px) {
+      .why-grid, .social-grid, .field-grid { grid-template-columns: 1fr; }
+      .hero { padding-top: calc(var(--nav-h) + 1.5rem); }
+      .section { padding: 4.25rem 0; }
+      .float-card.edu { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="paper-bg">
+  <!-- ===================== CONFIG (edit here) ===================== -->
+  <script>
+    window.SITE_CONFIG = {
+      name: "الأستاذ راشد محمد",
+      nameLatin: "Prof. Rached Mohammed",
+      brandInitials: "RM",
+      titles: "أستاذ رياضيات | مهندس ذكاء اصطناعي",
+      headline: "نرافقك في رحلتك نحو التفوق والنجاح",
+      description: "التعليم ليس مجرد دروس، بل رحلة لتطوير القدرات واكتشاف الإمكانيات. نقدم لك برامج تعليمية وتكوينية تجمع بين الفهم، التطبيق، والتكنولوجيا الحديثة.",
+      school: "مدرسة الراشد المتفوق للتعليم والتكوين",
+      logo: "assets/logo-alrached.jpg",
+      profilePhoto: "assets/portrait-hero.jpg",
+      aboutPhoto: "assets/portrait-about.jpg",
+      websiteTitle: "الأستاذ راشد محمد | أستاذ رياضيات ومهندس ذكاء اصطناعي",
+      websiteDescription: "أستاذ رياضيات ومهندس ذكاء اصطناعي — برامج تعليمية وتكوينية في الرياضيات والإعلام الآلي.",
+      contactPhone: "", // مثال: +213555000000
+      social: {
+        instagram: "https://www.instagram.com/prof_rached_mohammed/",
+        facebook: "https://www.facebook.com/profile.php?id=61592282555246",
+        telegram: "https://t.me/+4TXA7P2ZmC00MGE0",
+        whatsapp: "https://chat.whatsapp.com/Fqci0zYj14t99zewhpW0Us",
+        youtube: "https://www.youtube.com/@ALRASHIDSCHOOLONLINE"
+      },
+      /**
+       * Webhook URL from Make.com / n8n only.
+       * NEVER put Telegram bot tokens or WhatsApp API secrets here.
+       */
+      webhookUrl: "",
+      aboutPhilosophy: "التفوق يبدأ بالفهم… ثم بالممارسة… ثم بالتقنية.",
+      boardTitle: "لوحة الأستاذ",
+      boardLines: [
+        "الرياضيات ليست أرقامًا فقط… بل طريقة تفكير.",
+        "نبسّط المفهوم، نبني الأساس، ثم نحلّ بثقة.",
+        "الذكاء الاصطناعي أداة… والتفوق قرار.",
+        "حصص منظمة · متابعة مستمرة · أسلوب واضح.",
+        "من الدرس إلى المهارة… ومن السؤال إلى الإنجاز."
+      ],
+      boardSignature: "— الأستاذ راشد محمد",
+      aboutPoints: [
+        { title: "تعليم الرياضيات", text: "تبسيط المفاهيم وبناء أساس متين عبر الشرح الواضح والتمارين الموجّهة." },
+        { title: "الذكاء الاصطناعي", text: "تكوين عملي على أدوات الذكاء الاصطناعي لدعم الدراسة والإنتاجية التعليمية." },
+        { title: "ريادة تعليمية", text: "تأسيس مدرسة الراشد المتفوق للتعليم والتكوين لتقديم برامج منظمة وحديثة." },
+        { title: "التدريب عن بُعد", text: "حصص مباشرة وتفاعلية مع متابعة مستمرة تناسب إيقاع المتعلّم." }
+      ],
+      benefits: [
+        { title: "شرح مبسّط", text: "نحوّل المفاهيم المعقدة إلى خطوات واضحة يسهل استيعابها." },
+        { title: "تعلّم تطبيقي", text: "تمارين عملية ومواقف دراسية حقيقية تعزّز الفهم." },
+        { title: "برامج منظمة", text: "مسارات تعليمية مرتبة حسب المستوى والهدف." },
+        { title: "مرونة عن بُعد", text: "إمكانية التعلم عبر الإنترنت بما يناسب جدولك." },
+        { title: "تقنيات حديثة", text: "دمج أدوات رقمية وذكاء اصطناعي لدعم رحلة التعلم." },
+        { title: "متابعة ودعم", text: "تواصل ومتابعة لمساعدة الطالب على التقدم بثقة." }
+      ],
+      courses: {
+        mathematics: [
+          { id: "math-support", name: "دروس الدعم في الرياضيات", description: "حصص دعم منتظمة لتثبيت الدروس وحل الصعوبات أولاً بأول.", audience: "تلاميذ مختلف المستويات", level: "متوسط / ثانوي", duration: "حسب الحاجة", format: "حضوري أو عن بُعد", glyph: "ƒ" },
+          { id: "math-exams", name: "المراجعة للاختبارات والفروض", description: "مراجعة مركّزة قبل الفروض والاختبارات مع تمارين نموذجية.", audience: "تلاميذ الطور المتوسط والثانوي", level: "متوسط / ثانوي", duration: "حصص مكثفة", format: "حضوري أو عن بُعد", glyph: "π" },
+          { id: "math-bem", name: "المراجعة لشهادة التعليم المتوسط", description: "تحضير منظم لامتحان شهادة التعليم المتوسط مع تدريب على النمط الرسمي.", audience: "سنة رابعة متوسط", level: "متوسط", duration: "برنامج مراجعة", format: "حضوري أو عن بُعد", glyph: "∑" },
+          { id: "math-bac", name: "المراجعة لشهادة البكالوريا", description: "مراجعة معمّقة وتمارين عالية المستوى للتحضير للبكالوريا.", audience: "سنة ثالثة ثانوي", level: "ثانوي", duration: "برنامج مراجعة", format: "حضوري أو عن بُعد", glyph: "∫" },
+          { id: "math-workshops", name: "الورشات المكثفة لحل التمارين", description: "ورشات مركّزة لتطوير سرعة ودقة حل التمارين.", audience: "متوسط وثانوي", level: "متوسط / ثانوي", duration: "ورشات قصيرة", format: "حضوري أو عن بُعد", glyph: "Δ" },
+          { id: "math-foundation", name: "التأسيس وتقوية المستوى", description: "برنامج تأسيسي لسد الثغرات وبناء قاعدة رياضية قوية.", audience: "من يحتاج إعادة تأسيس", level: "متوسط / ثانوي", duration: "حسب التشخيص", format: "حضوري أو عن بُعد", glyph: "√" }
+        ],
+        informatics: [
+          { id: "inf-basics", name: "أساسيات الإعلام الآلي", description: "مدخل عملي لفهم الحاسوب وأنظمة التشغيل والاستخدام اليومي.", audience: "مبتدئون", level: "عام", duration: "دورة تأسيسية", format: "حضوري أو عن بُعد", glyph: "01" },
+          { id: "inf-computer", name: "تعلم استعمال الحاسوب", description: "مهارات عملية للتعامل مع الحاسوب بثقة في الدراسة والعمل.", audience: "تلاميذ وطلبة ومهنيون", level: "مبتدئ", duration: "دورة عملية", format: "حضوري أو عن بُعد", glyph: "PC" },
+          { id: "inf-word", name: "Microsoft Word", description: "تحرير المستندات وتنسيق البحوث والعروض النصية باحتراف.", audience: "طلبة ومهنيون", level: "مبتدئ / متوسط", duration: "ورشة تطبيقية", format: "حضوري أو عن بُعد", glyph: "W" },
+          { id: "inf-excel", name: "Microsoft Excel", description: "الجداول الحسابية، الصيغ، والتنظيم الفعّال للبيانات.", audience: "طلبة ومهنيون", level: "مبتدئ / متوسط", duration: "ورشة تطبيقية", format: "حضوري أو عن بُعد", glyph: "X" },
+          { id: "inf-ppt", name: "Microsoft PowerPoint", description: "تصميم عروض تقديمية واضحة وجذابة للمشاريع والدروس.", audience: "طلبة وأساتذة", level: "مبتدئ / متوسط", duration: "ورشة تطبيقية", format: "حضوري أو عن بُعد", glyph: "P" },
+          { id: "inf-digital", name: "المهارات الرقمية والتطبيقات الحديثة", description: "أدوات رقمية حديثة لتحسين الإنتاجية والتعلم.", audience: "عام", level: "عام", duration: "دورة قصيرة", format: "حضوري أو عن بُعد", glyph: "⌘" },
+          { id: "inf-coding", name: "البرمجة والتكنولوجيا", description: "مسارات برمجة وتقنية عند توفر الدورات المناسبة للمستوى.", audience: "مهتمون بالتكنولوجيا", level: "حسب الدورة", duration: "قابل للتكوين", format: "عن بُعد / حضوري", glyph: "{ }" }
+        ]
+      },
+      wilayas: [
+        "أدرار","الشلف","الأغواط","أم البواقي","باتنة","بجاية","بسكرة","بشار","البليدة","البويرة",
+        "تمنراست","تبسة","تلمسان","تيارت","تيزي وزو","الجزائر","الجلفة","جيجل","سطيف","سعيدة",
+        "سكيكدة","سيدي بلعباس","عنابة","قالمة","قسنطينة","المدية","مستغانم","المسيلة","معسكر","ورقلة",
+        "وهران","البيض","إليزي","برج بوعريريج","بومرداس","الطارف","تندوف","تيسمسيلت","الوادي","خنشلة",
+        "سوق أهراس","تيبازة","ميلة","عين الدفلى","النعامة","عين تموشنت","غرداية","غليزان",
+        "تيميمون","برج باجي مختار","أولاد جلال","بني عباس","عين صالح","عين قزام","تقرت","جانت","المغير","المنيعة"
+      ],
+      studyYears: {
+        primary: ["سنة أولى ابتدائي","سنة ثانية ابتدائي","سنة ثالثة ابتدائي","سنة رابعة ابتدائي","سنة خامسة ابتدائي"],
+        middle: ["سنة أولى متوسط","سنة ثانية متوسط","سنة ثالثة متوسط","سنة رابعة متوسط"],
+        secondary: ["سنة أولى ثانوي","سنة ثانية ثانوي","سنة ثالثة ثانوي"],
+        university: ["سنة أولى جامعية","سنة ثانية جامعية","سنة ثالثة جامعية","ماستر 1","ماستر 2","أخرى"],
+        other: ["أخرى"]
+      },
+      freeLiveWorkshop: {
+        id: "free-live-workshop",
+        name: "ورشة مباشرة مجانية",
+        description: "جلسة مباشرة مجانية للتعرّف على أسلوب الشرح وخطة التفوق — بدون التزام.",
+        audience: "للجميع",
+        level: "مفتوح",
+        duration: "60–90 دقيقة",
+        format: "مباشر عن بُعد",
+        category: "mathematics",
+        glyph: "✦"
+      },
+      hotTake: {
+        eyebrow: "Hot take",
+        title: "التفوّق ما يجيش من الحفظ… يجيك من الفهم + التدريب الذكي.",
+        text: "جرّب ورشة مباشرة مجانية وشوف بنفسك أسلوب الشرح والمتابعة قبل ما تلتزم بأي برنامج.",
+        cta: "سجّل في الورشة المجانية",
+        note: "مقاعد محدودة · تسجيل أولي مجاني"
+      },
+      socialProof: {
+        intervalMs: 10 * 60 * 1000,
+        firstDelayMs: 18000,
+        displayMs: 6500,
+        names: [
+          "يوسف","أمين","مريم","إيناس","خالد","سارة","رياض","نادية","أنس","ليلى",
+          "هشام","فاطمة","وليد","آية","مهدي","سلمى","ياسين","رقية","عماد","هدى"
+        ],
+        cities: [
+          "الجزائر","وهران","قسنطينة","سطيف","عنابة","بلعباس","بجاية","تيزي وزو",
+          "ورقلة","باتنة","الشلف","البليدة","مستغانم","الجلفة","سكيكدة"
+        ]
+      }
+    };
+  </script>
+
+  <a class="sr-only" href="#main">تخطي إلى المحتوى</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="الصفحة الرئيسية">
+        <span class="brand-mark" id="brandMark">RM</span>
+        <span class="brand-text">
+          <span id="brandName">الأستاذ راشد محمد</span>
+          <small id="brandSchoolShort">مدرسة الراشد</small>
+        </span>
+      </a>
+      <nav aria-label="التنقل الرئيسي">
+        <ul class="nav-links">
+          <li><a href="#about">من أنا</a></li>
+          <li><a href="#courses">الدورات</a></li>
+          <li><a href="#why">لماذا معنا</a></li>
+          <li><a href="#social">تواصل</a></li>
+        </ul>
+      </nav>
+      <a class="nav-cta" href="#register">سجّل الآن</a>
+      <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobileDrawer" hidden>
+    <a href="#about">من أنا</a>
+    <a href="#courses">الدورات</a>
+    <a href="#why">لماذا معنا</a>
+    <a href="#register">التسجيل</a>
+    <a href="#social">تواصل</a>
+  </div>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero container" id="top">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="hero-kicker">Education × Technology</div>
+          <div class="hero-title-wrap">
+            <div class="hero-title-outline" aria-hidden="true" id="heroOutline">الأستاذ راشد محمد</div>
+            <h1 class="hero-title" id="heroName">الأستاذ راشد محمد</h1>
+            <div class="hero-accent-bar" aria-hidden="true"></div>
+          </div>
+          <p class="hero-roles" id="heroTitles">أستاذ رياضيات | مهندس ذكاء اصطناعي</p>
+          <p class="hero-headline" id="heroHeadline">نرافقك في رحلتك نحو التفوق والنجاح</p>
+          <p class="hero-desc" id="heroDesc"></p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#courses">اكتشف الدورات</a>
+            <a class="btn btn-secondary" href="#register">سجّل الآن</a>
+          </div>
+          <div class="hero-social" id="heroSocial" aria-label="وسائل التواصل"></div>
+        </div>
+
+        <div class="hero-stage" id="heroStage" aria-hidden="true">
+          <div class="stage-ring"></div>
+          <div class="stage-ring inner"></div>
+          <div class="stamp"><span>MATH × AI EDUCATION</span></div>
+          <div class="crosshair" style="top:12%;left:18%"></div>
+          <div class="crosshair" style="bottom:16%;right:22%"></div>
+          <div class="float-card math" data-parallax="20">y = f(x)<span class="mini">Mathematics</span></div>
+          <div class="float-card ai" data-parallax="-16">AI Tools<span class="mini">Gemini · GPT · Claude</span></div>
+          <div class="float-card edu" data-parallax="12">Online Class<span class="mini">Live & Interactive</span></div>
+          <div class="central-subject" data-parallax="8">
+            <div class="central-core" id="centralCore"></div>
+          </div>
+          <div class="logo-badge" id="logoBadge" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section section-dark" id="about">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="eyebrow">About</div>
+          <h2 class="section-title">من أنا <span class="outline">/ الهوية المهنية</span></h2>
+          <p class="section-lead">تعريف تحريري بهوية تعليمية تجمع بين الرياضيات، الذكاء الاصطناعي، وبناء تجربة تعلّم حديثة.</p>
+        </div>
+        <div class="about-layout">
+          <div class="about-media reveal">
+            <div class="about-photo" id="aboutPhoto"></div>
+            <div class="about-logo-card">
+              <img id="aboutLogo" src="assets/logo-alrached.jpg" alt="مدرسة الراشد" width="72" height="72" loading="lazy" />
+              <div>
+                <strong id="aboutSchoolCard">مدرسة الراشد</strong>
+                <span>Formation Professionnelle · Education × AI</span>
+              </div>
+            </div>
+          </div>
+          <aside class="chalk-board reveal" id="chalkBoard" aria-label="لوحة تعليمية">
+            <div class="chalk-top">
+              <span class="chalk-label" id="boardTitle">Chalk Notes</span>
+              <div class="chalk-erasers" aria-hidden="true"><span></span><span></span><span></span></div>
+            </div>
+            <h3 class="chalk-title" id="aboutQuote"></h3>
+            <div class="chalk-rule" aria-hidden="true"></div>
+            <div class="chalk-lines" id="chalkLines"></div>
+            <div class="chalk-doodles" aria-hidden="true">
+              <span class="chalk-doodle">y = f(x)</span>
+              <span class="chalk-doodle">∑ · √ · π</span>
+              <span class="chalk-doodle">AI × Math</span>
+              <span class="chalk-doodle">نجاح = فهم + تمرين</span>
+            </div>
+            <div class="chalk-rule" aria-hidden="true"></div>
+            <div class="chalk-foot">
+              <div>
+                <p class="chalk-sign" id="chalkSign"></p>
+                <p class="chalk-label" id="aboutSchool" style="margin-top:.35rem;letter-spacing:0;text-transform:none;font-family:var(--font-ar);font-size:.85rem"></p>
+              </div>
+              <div class="about-chips" id="aboutChips"></div>
+            </div>
+          </aside>
+        </div>
+        <div class="timeline" id="aboutTimeline"></div>
+      </div>
+    </section>
+
+    <!-- COURSES -->
+    <section class="section section-dark" id="courses" style="padding-top:0">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="eyebrow">Workshops</div>
+          <h2 class="section-title">الدورات والورشات</h2>
+          <p class="section-lead">مساران واضحان: الرياضيات والإعلام الآلي — اختر ما يناسب هدفك وسجّل مباشرة.</p>
+        </div>
+        <div class="cat-tabs" role="tablist" aria-label="تصنيف الدورات">
+          <button class="cat-tab active" role="tab" aria-selected="true" data-cat="mathematics">الرياضيات</button>
+          <button class="cat-tab" role="tab" aria-selected="false" data-cat="informatics">الإعلام الآلي</button>
+        </div>
+        <div class="course-slider" id="courseSlider">
+          <div class="course-viewport" id="courseViewport" aria-roledescription="carousel" aria-label="شرائح الدورات">
+            <div class="course-track" id="courseTrack" role="tabpanel"></div>
+          </div>
+          <div class="course-controls">
+            <button type="button" class="course-nav-btn" id="coursePrev" aria-label="الورشة السابقة">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 6-6 6 6 6"/></svg>
+            </button>
+            <div class="course-dots" id="courseDots" aria-label="مؤشر الشرائح"></div>
+            <div class="course-counter" id="courseCounter">01 / 01</div>
+            <button type="button" class="course-nav-btn" id="courseNext" aria-label="الورشة التالية">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 6 6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY -->
+    <section class="section" id="why">
+      <div class="why-float f1" aria-hidden="true">∑</div>
+      <div class="why-float f2" aria-hidden="true">{ }</div>
+      <div class="why-float f3" aria-hidden="true">π</div>
+      <div class="why-float f4" aria-hidden="true">AI</div>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Why learn with me</div>
+          <h2 class="section-title">لماذا تتعلّم معي؟</h2>
+          <p class="section-lead">أسلوب تعليمي واضح، عملي، ومرن — بدون ادّعاءات أو أرقام غير موثّقة.</p>
+        </div>
+        <div class="why-grid" id="whyGrid"></div>
+      </div>
+    </section>
+
+    <!-- HOT TAKE / FREE LIVE WORKSHOP -->
+    <section class="section" id="hot-take" aria-labelledby="hotTakeTitle">
+      <div class="container">
+        <div class="hot-take reveal" id="hotTakeCard">
+          <span class="hot-take-badge" id="hotTakeEyebrow">Hot take</span>
+          <h3 id="hotTakeTitle">التفوّق ما يجيش من الحفظ… يجيك من الفهم + التدريب الذكي.</h3>
+          <p id="hotTakeText">جرّب ورشة مباشرة مجانية وشوف بنفسك أسلوب الشرح والمتابعة قبل ما تلتزم بأي برنامج.</p>
+          <div class="hot-take-actions">
+            <a class="btn btn-primary" href="#register" id="freeWorkshopCta">سجّل في الورشة المجانية</a>
+            <span class="hot-take-note" id="hotTakeNote">مقاعد محدودة · تسجيل أولي مجاني</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGISTER -->
+    <section class="section" id="register">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="eyebrow">Registration</div>
+          <h2 class="section-title">سجّل الآن</h2>
+          <p class="section-lead">أملأ النموذج في دقائق. سنتواصل معك لتأكيد الطلب — التسجيل النهائي يتم بعد المراجعة.</p>
+        </div>
+        <div class="register-shell">
+          <aside class="register-intro reveal">
+            <div class="eyebrow">Start here</div>
+            <h3 class="section-title" style="font-size:1.8rem;margin:.6rem 0 1rem">خطوات بسيطة نحو برنامجك</h3>
+            <p style="color:rgba(255,255,255,.7);margin-bottom:1.25rem">بعد الإرسال يصلك رقم مرجعي، وتصلني إشعارات عبر قنوات الإشعارات المفعّلة (تيليجرام / واتساب عبر Webhook).</p>
+            <ul style="display:grid;gap:.7rem;list-style:none;color:rgba(255,255,255,.82);font-weight:700">
+              <li>1 — بياناتك الشخصية</li>
+              <li>2 — مستواك الدراسي</li>
+              <li>3 — الدورة والمراجعة النهائية</li>
+            </ul>
+          </aside>
+
+          <div class="form-card reveal" id="formCard">
+            <div id="formWrapper">
+              <div class="progress" aria-hidden="true">
+                <div class="progress-step active" data-p="1"><span></span></div>
+                <div class="progress-step" data-p="2"><span></span></div>
+                <div class="progress-step" data-p="3"><span></span></div>
+              </div>
+              <div class="progress-labels">
+                <span class="on" data-pl="1">الطالب</span>
+                <span data-pl="2">الدراسة</span>
+                <span data-pl="3">الدورة</span>
+              </div>
+
+              <form id="regForm" novalidate>
+                <!-- STEP 1 -->
+                <div class="form-step active" data-step="1">
+                  <div class="field-grid">
+                    <div class="field full">
+                      <label for="fullName">الاسم الكامل <span class="req">*</span></label>
+                      <input id="fullName" name="fullName" autocomplete="name" required />
+                      <div class="error" data-error="fullName"></div>
+                    </div>
+                    <div class="field">
+                      <label for="phone">رقم الهاتف <span class="req">*</span></label>
+                      <input id="phone" name="phone" inputmode="tel" placeholder="05xxxxxxxx" required />
+                      <div class="error" data-error="phone"></div>
+                    </div>
+                    <div class="field">
+                      <label for="whatsapp">واتساب (اختياري)</label>
+                      <input id="whatsapp" name="whatsapp" inputmode="tel" />
+                      <div class="error" data-error="whatsapp"></div>
+                    </div>
+                    <div class="field full">
+                      <label class="check-row" style="padding:0;background:transparent;border:none">
+                        <input type="checkbox" id="sameWhatsapp" />
+                        <span>استخدام نفس رقم الهاتف للواتساب</span>
+                      </label>
+                    </div>
+                    <div class="field">
+                      <label for="wilaya">الولاية <span class="req">*</span></label>
+                      <select id="wilaya" name="wilaya" required></select>
+                      <div class="error" data-error="wilaya"></div>
+                    </div>
+                    <div class="field">
+                      <label for="municipality">البلدية (اختياري)</label>
+                      <input id="municipality" name="municipality" />
+                    </div>
+                  </div>
+                  <div class="form-nav">
+                    <span></span>
+                    <button type="button" class="btn btn-primary" data-next>التالي</button>
+                  </div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="form-step" data-step="2">
+                  <div class="field-grid">
+                    <div class="field">
+                      <label for="educationLevel">المستوى الدراسي <span class="req">*</span></label>
+                      <select id="educationLevel" name="educationLevel" required>
+                        <option value="">اختر...</option>
+                        <option value="primary">ابتدائي</option>
+                        <option value="middle">متوسط</option>
+                        <option value="secondary">ثانوي</option>
+                        <option value="university">جامعي</option>
+                        <option value="other">أخرى</option>
+                      </select>
+                      <div class="error" data-error="educationLevel"></div>
+                    </div>
+                    <div class="field">
+                      <label for="studyYear">السنة الدراسية <span class="req">*</span></label>
+                      <select id="studyYear" name="studyYear" required>
+                        <option value="">اختر المستوى أولاً</option>
+                      </select>
+                      <div class="error" data-error="studyYear"></div>
+                    </div>
+                    <div class="field full">
+                      <label for="stream">الشعبة / التخصص (إن وُجد)</label>
+                      <input id="stream" name="stream" placeholder="مثال: علوم تجريبية، إعلام آلي..." />
+                    </div>
+                  </div>
+                  <div class="form-nav">
+                    <button type="button" class="btn btn-ghost" data-prev>رجوع</button>
+                    <button type="button" class="btn btn-primary" data-next>التالي</button>
+                  </div>
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="form-step" data-step="3">
+                  <div class="field-grid">
+                    <div class="field">
+                      <label for="category">مجال الاهتمام <span class="req">*</span></label>
+                      <select id="category" name="category" required>
+                        <option value="">اختر...</option>
+                        <option value="mathematics">الرياضيات</option>
+                        <option value="informatics">الإعلام الآلي</option>
+                      </select>
+                      <div class="error" data-error="category"></div>
+                    </div>
+                    <div class="field">
+                      <label for="workshop">الورشة / الدورة <span class="req">*</span></label>
+                      <select id="workshop" name="workshop" required>
+                        <option value="">اختر المجال أولاً</option>
+                      </select>
+                      <div class="error" data-error="workshop"></div>
+                    </div>
+                    <div class="field">
+                      <label for="format">صيغة التعلم <span class="req">*</span></label>
+                      <select id="format" name="format" required>
+                        <option value="">اختر...</option>
+                        <option value="online">عن بُعد</option>
+                        <option value="inperson">حضوري</option>
+                      </select>
+                      <div class="error" data-error="format"></div>
+                    </div>
+                    <div class="field">
+                      <label for="schedule">الوقت المفضّل <span class="req">*</span></label>
+                      <select id="schedule" name="schedule" required>
+                        <option value="">اختر...</option>
+                        <option value="morning">صباحًا</option>
+                        <option value="afternoon">بعد الظهر</option>
+                        <option value="evening">مساءً</option>
+                        <option value="flexible">مرن</option>
+                      </select>
+                      <div class="error" data-error="schedule"></div>
+                    </div>
+                    <div class="field full">
+                      <label for="message">أهدافك أو ملاحظات إضافية</label>
+                      <textarea id="message" name="message" placeholder="مثال: أريد تقوية التحليل، أو تعلم Excel للعمل..."></textarea>
+                    </div>
+                    <div class="field full">
+                      <div class="summary" id="summaryBox" hidden></div>
+                    </div>
+                    <div class="field full">
+                      <label class="check-row">
+                        <input type="checkbox" id="consent" name="consent" required />
+                        <span>أوافق على استخدام بياناتي لمعالجة طلب التسجيل والتواصل معي بخصوص الدورة. <span class="req">*</span></span>
+                      </label>
+                      <div class="error" data-error="consent"></div>
+                    </div>
+                  </div>
+                  <div class="form-nav">
+                    <button type="button" class="btn btn-ghost" data-prev>رجوع</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">إرسال طلب التسجيل</button>
+                  </div>
+                  <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+                </div>
+              </form>
+            </div>
+
+            <div class="success-screen" id="successScreen">
+              <div class="success-icon" aria-hidden="true">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <h3>تم استلام طلب تسجيلك بنجاح!</h3>
+              <p>شكراً لثقتك. سنتواصل معك قريباً لتأكيد معلومات التسجيل.</p>
+              <p style="font-size:.9rem">هذا طلب تسجيل أولي وليس تسجيلاً نهائياً حتى تتم المراجعة والتأكيد.</p>
+              <div class="ref-code" id="refCode"></div>
+              <button type="button" class="btn btn-secondary" id="newRegBtn" style="margin-inline:auto;margin-top:1rem">تسجيل آخر</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOCIAL -->
+    <section class="section" id="social">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="eyebrow">Connect</div>
+          <h2 class="section-title">تواصل عبر المنصات</h2>
+          <p class="section-lead">تابع المحتوى التعليمي وتواصل مباشرة عبر القنوات الرسمية.</p>
+        </div>
+        <div class="social-grid" id="socialGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div style="display:flex;align-items:center;gap:.85rem;margin-bottom:1rem">
+            <img id="footerLogo" src="assets/logo-alrached.jpg" alt="مدرسة الراشد" width="56" height="56" loading="lazy" style="width:56px;height:56px;border-radius:50%;object-fit:cover;background:#0b1830" />
+            <h3 id="footerName" style="margin:0"></h3>
+          </div>
+          <p id="footerDesc"></p>
+        </div>
+        <div>
+          <h4>روابط سريعة</h4>
+          <ul>
+            <li><a href="#about">من أنا</a></li>
+            <li><a href="#courses">الدورات</a></li>
+            <li><a href="#register">التسجيل</a></li>
+            <li><a href="#social">التواصل</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>التواصل</h4>
+          <ul>
+            <li id="footerPhone"></li>
+            <li><a href="#privacy">سياسة الخصوصية</a></li>
+          </ul>
+          <div class="footer-social" id="footerSocial" style="margin-top:1rem"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span id="copyright"></span>
+        <span>Built as an immersive educational portfolio</span>
+      </div>
+    </div>
+  </footer>
+
+  <div id="privacy" hidden></div>
+  <a class="fab-wa" id="fabWa" href="#" target="_blank" rel="noopener noreferrer" aria-label="تواصل عبر واتساب" hidden>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.78 11.78 0 0 0 12.04 0C5.5 0 .2 5.3.2 11.82c0 2.08.55 4.11 1.6 5.9L0 24l6.45-1.69a11.8 11.8 0 0 0 5.57 1.42h.01c6.54 0 11.84-5.3 11.84-11.82 0-3.16-1.23-6.13-3.35-8.43ZM12.03 21.6h-.01a9.78 9.78 0 0 1-4.99-1.37l-.36-.21-3.83 1 1.02-3.73-.24-.38a9.76 9.76 0 0 1-1.5-5.23C2.12 6.4 6.56 1.97 12.04 1.97c2.61 0 5.07 1.02 6.92 2.87a9.7 9.7 0 0 1 2.86 6.9c0 5.48-4.45 9.86-9.79 9.86Zm5.68-7.35c-.31-.16-1.84-.91-2.13-1.01-.28-.1-.49-.16-.7.16-.2.31-.8 1.01-.98 1.22-.18.2-.36.23-.67.08-.31-.16-1.31-.48-2.5-1.54-.92-.82-1.54-1.83-1.72-2.14-.18-.31-.02-.48.14-.63.14-.14.31-.36.47-.54.16-.18.2-.31.31-.52.1-.2.05-.39-.03-.54-.08-.16-.7-1.68-.96-2.3-.25-.6-.5-.52-.7-.53h-.6c-.2 0-.52.08-.8.39-.28.31-1.05 1.03-1.05 2.5s1.08 2.9 1.23 3.1c.16.2 2.12 3.24 5.14 4.54.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.84-.75 2.1-1.48.26-.73.26-1.35.18-1.48-.08-.13-.28-.2-.59-.36Z"/></svg>
+  </a>
+
+  <aside class="signup-toast" id="signupToast" role="status" aria-live="polite" aria-atomic="true" hidden>
+    <div class="signup-toast-avatar" id="signupToastAvatar" aria-hidden="true">؟</div>
+    <div class="signup-toast-body">
+      <strong id="signupToastName">أحدهم سجّل الآن</strong>
+      <span id="signupToastCourse">في دورة / ورشة</span>
+      <em class="signup-toast-meta" id="signupToastMeta">منذ لحظات</em>
+    </div>
+    <button type="button" class="signup-toast-close" id="signupToastClose" aria-label="إغلاق الإشعار">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </aside>
+
+  <script>
+    (function () {
+      const CFG = window.SITE_CONFIG;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduceMotion) document.body.classList.add("reduced");
+
+      /* ---------- Meta & brand ---------- */
+      document.title = CFG.websiteTitle;
+      const descMeta = document.querySelector('meta[name="description"]');
+      if (descMeta) descMeta.setAttribute("content", CFG.websiteDescription);
+      document.querySelector('meta[property="og:title"]').setAttribute("content", CFG.websiteTitle);
+      document.querySelector('meta[property="og:description"]').setAttribute("content", CFG.headline);
+
+      const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+      const setImg = (el, src, alt) => {
+        if (!el || !src) return;
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = alt || "";
+        img.loading = "lazy";
+        img.decoding = "async";
+        el.innerHTML = "";
+        el.appendChild(img);
+      };
+
+      setText("brandName", CFG.name);
+      setText("brandSchoolShort", "مدرسة الراشد المتفوق");
+      setText("heroOutline", CFG.name);
+      setText("heroName", CFG.name);
+      setText("heroTitles", CFG.titles);
+      setText("heroHeadline", CFG.headline);
+      setText("heroDesc", CFG.description);
+      setText("aboutQuote", CFG.aboutPhilosophy);
+      setText("aboutSchool", CFG.school);
+      setText("aboutSchoolCard", CFG.school);
+      setText("boardTitle", CFG.boardTitle || "لوحة الأستاذ");
+      setText("chalkSign", CFG.boardSignature || ("— " + CFG.name));
+
+      const chalkLines = document.getElementById("chalkLines");
+      if (chalkLines) {
+        chalkLines.innerHTML = (CFG.boardLines || []).map((line) =>
+          `<p class="chalk-line">${escapeHtml(line)}</p>`
+        ).join("");
+      }
+      setText("footerName", CFG.name);
+      setText("footerDesc", CFG.description);
+      setText("copyright", "© " + new Date().getFullYear() + " " + CFG.name + " · " + CFG.school + ". جميع الحقوق محفوظة.");
+      document.getElementById("footerPhone").textContent = CFG.contactPhone
+        ? ("الهاتف: " + CFG.contactPhone)
+        : "أضف رقم التواصل من ملف الإعدادات.";
+
+      const brandMark = document.getElementById("brandMark");
+      if (CFG.logo) {
+        setImg(brandMark, CFG.logo, CFG.school);
+        document.querySelectorAll('meta[property="og:image"]').forEach((m) => m.remove());
+        const og = document.createElement("meta");
+        og.setAttribute("property", "og:image");
+        og.setAttribute("content", new URL(CFG.profilePhoto || CFG.logo, window.location.href).href);
+        document.head.appendChild(og);
+      } else {
+        brandMark.textContent = CFG.brandInitials;
+      }
+
+      const centralCore = document.getElementById("centralCore");
+      if (CFG.profilePhoto && centralCore) {
+        centralCore.classList.add("has-photo");
+        setImg(centralCore, CFG.profilePhoto, CFG.name);
+      }
+
+      if (CFG.logo) {
+        setImg(document.getElementById("logoBadge"), CFG.logo, CFG.school);
+        const aboutLogo = document.getElementById("aboutLogo");
+        if (aboutLogo) { aboutLogo.src = CFG.logo; aboutLogo.alt = CFG.school; }
+        const footerLogo = document.getElementById("footerLogo");
+        if (footerLogo) { footerLogo.src = CFG.logo; footerLogo.alt = CFG.school; }
+      }
+
+      if (CFG.aboutPhoto) {
+        setImg(document.getElementById("aboutPhoto"), CFG.aboutPhoto, CFG.name);
+      } else if (CFG.profilePhoto) {
+        setImg(document.getElementById("aboutPhoto"), CFG.profilePhoto, CFG.name);
+      }
+
+      document.getElementById("aboutChips").innerHTML = [
+        "رياضيات", "ذكاء اصطناعي", "تكوين عن بُعد", "متابعة"
+      ].map(t => `<span class="chip">${t}</span>`).join("");
+
+      (function initChalkWriting() {
+        const board = document.getElementById("chalkBoard");
+        if (!board) return;
+        const start = () => {
+          if (board.classList.contains("is-written")) return;
+          board.classList.add("is-written");
+          board.querySelectorAll(".chalk-line").forEach((line) => line.classList.add("writing"));
+          const sign = document.getElementById("chalkSign");
+          if (sign) sign.classList.add("writing");
+        };
+        if (reduceMotion) { start(); return; }
+        if (!("IntersectionObserver" in window)) { start(); return; }
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              start();
+              io.disconnect();
+            }
+          });
+        }, { threshold: 0.35 });
+        io.observe(board);
+      })();
+
+      document.getElementById("aboutTimeline").innerHTML = CFG.aboutPoints.map((p, i) => `
+        <article class="timeline-item">
+          <div class="timeline-idx">0${i + 1}</div>
+          <div>
+            <h3>${escapeHtml(p.title)}</h3>
+            <p>${escapeHtml(p.text)}</p>
+          </div>
+        </article>
+      `).join("");
+
+      const whyIcons = [
+        '<path class="draw" d="M4 19V5l8-2 8 2v14l-8 2-8-2z"/><path class="draw" d="M12 3v18"/><path class="draw" d="M8 10h8"/>',
+        '<rect class="draw" x="4" y="4" width="16" height="16" rx="3"/><path class="draw" d="M8 12h8M12 8v8"/>',
+        '<path class="draw" d="M4 7h16v12H4z"/><path class="draw" d="M8 7V5h8v2"/><path class="draw" d="M9 12h6M9 15h4"/>',
+        '<rect class="draw" x="3" y="5" width="18" height="12" rx="2"/><path class="draw" d="M8 21h8M12 17v4"/>',
+        '<circle class="draw" cx="12" cy="12" r="3"/><path class="draw" d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+        '<path class="draw" d="M12 21a8 8 0 1 0-8-8"/><path class="draw" d="M12 13V8"/><path class="draw" d="m9 18 3 3 3-3"/>'
+      ];
+      document.getElementById("whyGrid").innerHTML = CFG.benefits.map((b, i) => `
+        <article class="why-card">
+          <span class="why-num">0${i + 1}</span>
+          <div class="why-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">${whyIcons[i % whyIcons.length]}</svg>
+          </div>
+          <h3>${escapeHtml(b.title)}</h3>
+          <p>${escapeHtml(b.text)}</p>
+        </article>
+      `).join("");
+
+      (function initWhySection() {
+        const why = document.getElementById("why");
+        if (!why) return;
+        const turnOn = () => why.classList.add("is-on");
+        if (reduceMotion) { turnOn(); return; }
+        if (!("IntersectionObserver" in window)) { turnOn(); return; }
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              turnOn();
+              io.disconnect();
+            }
+          });
+        }, { threshold: 0.2 });
+        io.observe(why);
+      })();
+
+      /* ---------- Social icons ---------- */
+      const socialDefs = [
+        { key: "instagram", label: "Instagram", brand: "#E1306C", svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.9a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>' },
+        { key: "facebook", label: "Facebook", brand: "#1877F2", svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4h-3c-2.8 0-5 2.2-5 5v2H7v4h2v7h4v-7h3l1-4h-4V9c0-.6.4-1 1-1z"/></svg>' },
+        { key: "telegram", label: "Telegram", brand: "#229ED9", svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8 4.3 3.7 11.3c-1.2.5-1.2 1.2-.2 1.5l4.6 1.4 1.8 5.5c.2.7.4.9 1 .9.5 0 .8-.2 1.1-.5l2.7-2.6 4.5 3.3c.8.5 1.4.2 1.6-.8l2.9-13.7c.3-1.2-.4-1.7-1.3-1.3z"/></svg>' },
+        { key: "whatsapp", label: "WhatsApp", brand: "#25D366", svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.8 11.8 0 0 0 12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6A12 12 0 0 0 12 24c6.6 0 12-5.4 12-12 0-3.2-1.3-6.2-3.5-8.5zM12 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7 1 .9-3.6-.2-.4A9.8 9.8 0 0 1 2.2 12C2.2 6.6 6.6 2.2 12 2.2S21.8 6.6 21.8 12 17.4 21.8 12 21.8zm5.5-7.3c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2-.8 1-.9 1.2-.4.2-.7.1c-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4s-1 1-1 2.5 1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2.1-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4z"/></svg>' },
+        { key: "youtube", label: "YouTube", brand: "#FF0000", svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>' }
+      ];
+
+      function socialHref(key) {
+        const v = (CFG.social[key] || "").trim();
+        if (!v) return null;
+        if (key === "whatsapp") {
+          if (/^https?:\/\//i.test(v)) return v; // group invite or full link
+          const num = String(v).replace(/[^\d]/g, "");
+          return num ? `https://wa.me/${num}` : null;
+        }
+        return v;
+      }
+
+      function renderSocial() {
+        const hero = document.getElementById("heroSocial");
+        const grid = document.getElementById("socialGrid");
+        const foot = document.getElementById("footerSocial");
+        hero.innerHTML = "";
+        grid.innerHTML = "";
+        foot.innerHTML = "";
+
+        socialDefs.forEach((s) => {
+          const href = socialHref(s.key);
+          const ready = Boolean(href);
+          const linkAttrs = ready
+            ? `href="${href}" target="_blank" rel="noopener noreferrer"`
+            : `href="#" aria-disabled="true" title="أضف الرابط في SITE_CONFIG"`;
+
+          hero.insertAdjacentHTML("beforeend", `
+            <a class="social-icon" ${linkAttrs} style="--brand:${s.brand};width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb, ${s.brand} 14%, white);color:${s.brand};border:1px solid var(--line);opacity:${ready ? 1 : .45}" aria-label="${s.label}">${s.svg}</a>
+          `);
+
+          grid.insertAdjacentHTML("beforeend", `
+            <a class="social-card" ${linkAttrs} style="--brand:${s.brand};opacity:${ready ? 1 : .55}">
+              <div class="social-icon">${s.svg}</div>
+              <strong>${s.label}</strong>
+              <span>${ready ? "فتح الحساب" : "بانتظار الرابط"}</span>
+            </a>
+          `);
+
+          foot.insertAdjacentHTML("beforeend", `
+            <a ${linkAttrs} aria-label="${s.label}" style="color:${ready ? s.brand : 'rgba(255,255,255,.35)'}">${s.svg}</a>
+          `);
+        });
+
+        const wa = socialHref("whatsapp");
+        const fab = document.getElementById("fabWa");
+        if (wa) {
+          fab.hidden = false;
+          fab.href = wa;
+        }
+      }
+      renderSocial();
+
+      /* ---------- Courses fan / coverflow slider ---------- */
+      let activeCat = "mathematics";
+      let courseIndex = 0;
+      let courseCount = 0;
+      const courseTrack = document.getElementById("courseTrack");
+      const courseViewport = document.getElementById("courseViewport");
+      const courseDots = document.getElementById("courseDots");
+      const courseCounter = document.getElementById("courseCounter");
+      const coursePrev = document.getElementById("coursePrev");
+      const courseNext = document.getElementById("courseNext");
+
+      function fanLayout(offset) {
+        const abs = Math.abs(offset);
+        const dir = Math.sign(offset) || 0;
+        const narrow = window.innerWidth < 700;
+        const spacing = narrow ? 64 : 98;
+        const drop = narrow ? 18 : 26;
+        const rotStep = narrow ? 11 : 15;
+        return {
+          x: `${dir * spacing * abs}px`,
+          y: `${abs * drop + abs * abs * 4}px`,
+          rot: `${dir * rotStep * Math.min(abs, 3)}deg`,
+          scale: abs === 0 ? 1 : Math.max(0.68, 0.9 - abs * 0.08),
+          z: 100 - abs * 10,
+          hidden: abs > 3
+        };
+      }
+
+      function updateCourseSlider() {
+        const cards = courseTrack.querySelectorAll(".course-card");
+        cards.forEach((card, i) => {
+          const offset = i - courseIndex;
+          const fan = fanLayout(offset);
+          card.style.setProperty("--fan-x", fan.x);
+          card.style.setProperty("--fan-y", fan.y);
+          card.style.setProperty("--fan-rot", fan.rot);
+          card.style.setProperty("--fan-scale", String(fan.scale));
+          card.style.setProperty("--fan-z", String(fan.z));
+          card.classList.toggle("is-active", offset === 0);
+          card.classList.toggle("is-hidden-fan", fan.hidden);
+          card.setAttribute("aria-hidden", offset === 0 ? "false" : "true");
+        });
+        courseDots.querySelectorAll(".course-dot").forEach((dot, i) => {
+          const on = i === courseIndex;
+          dot.classList.toggle("active", on);
+          if (on) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
+        });
+        const cur = String(courseIndex + 1).padStart(2, "0");
+        const total = String(Math.max(courseCount, 1)).padStart(2, "0");
+        courseCounter.textContent = `${cur} / ${total}`;
+        coursePrev.disabled = courseIndex <= 0;
+        courseNext.disabled = courseIndex >= courseCount - 1;
+      }
+
+      function goCourse(i) {
+        if (!courseCount) return;
+        courseIndex = Math.max(0, Math.min(courseCount - 1, i));
+        updateCourseSlider();
+      }
+
+      function renderCourses(cat) {
+        activeCat = cat;
+        const list = CFG.courses[cat] || [];
+        courseCount = list.length;
+        courseIndex = Math.max(0, Math.floor((list.length - 1) / 2));
+        const accents = cat === "mathematics"
+          ? ["#00B86B", "#12c47a", "#009956", "#2dd4a0", "#00a86b", "#19b87a"]
+          : ["#3BA3FF", "#5bb4ff", "#2b8ae6", "#74c0ff", "#1f7ad4", "#4aaef8"];
+        courseTrack.innerHTML = list.map((c, i) => `
+          <article class="course-card" data-course-index="${i}" style="--card-accent:${accents[i % accents.length]}">
+            <div class="course-cover" data-glyph="${escapeHtml(c.glyph || '•')}">
+              <span class="course-cover-badge">${cat === "mathematics" ? "رياضيات" : "إعلام آلي"}</span>
+              <span class="course-index" dir="ltr">${String(i + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}</span>
+            </div>
+            <div class="course-body">
+              <h3>${escapeHtml(c.name)}</h3>
+              <p>${escapeHtml(c.description)}</p>
+              <div class="course-meta">
+                <span class="meta-pill">${escapeHtml(c.audience)}</span>
+                <span class="meta-pill">${escapeHtml(c.level)}</span>
+                <span class="meta-pill">${escapeHtml(c.duration)}</span>
+              </div>
+              <div class="course-actions">
+                <a class="btn btn-primary" href="#register" data-course-id="${escapeHtml(c.id)}" data-course-cat="${cat}">سجّل الآن</a>
+              </div>
+            </div>
+          </article>
+        `).join("");
+        courseDots.innerHTML = list.map((_, i) =>
+          `<button type="button" class="course-dot${i === courseIndex ? " active" : ""}" data-index="${i}" aria-label="الانتقال إلى الورشة ${i + 1}"></button>`
+        ).join("");
+        updateCourseSlider();
+      }
+      renderCourses("mathematics");
+
+      document.querySelectorAll(".cat-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".cat-tab").forEach((t) => {
+            t.classList.toggle("active", t === tab);
+            t.setAttribute("aria-selected", t === tab ? "true" : "false");
+          });
+          renderCourses(tab.dataset.cat);
+        });
+      });
+
+      coursePrev.addEventListener("click", () => goCourse(courseIndex - 1));
+      courseNext.addEventListener("click", () => goCourse(courseIndex + 1));
+      courseDots.addEventListener("click", (e) => {
+        const dot = e.target.closest(".course-dot");
+        if (!dot) return;
+        goCourse(Number(dot.dataset.index));
+      });
+
+      courseTrack.addEventListener("click", (e) => {
+        const card = e.target.closest(".course-card");
+        if (!card) return;
+        const idx = Number(card.dataset.courseIndex);
+        if (idx !== courseIndex) {
+          e.preventDefault();
+          goCourse(idx);
+          return;
+        }
+        const btn = e.target.closest("[data-course-id]");
+        if (!btn) return;
+        const cat = btn.dataset.courseCat;
+        const id = btn.dataset.courseId;
+        const category = document.getElementById("category");
+        category.value = cat;
+        category.dispatchEvent(new Event("change"));
+        setTimeout(() => {
+          document.getElementById("workshop").value = id;
+        }, 0);
+      });
+
+      let wheelLock = false;
+      courseViewport.addEventListener("wheel", (e) => {
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        if (Math.abs(delta) < 10) return;
+        e.preventDefault();
+        if (wheelLock) return;
+        wheelLock = true;
+        goCourse(courseIndex + (delta > 0 ? 1 : -1));
+        setTimeout(() => { wheelLock = false; }, 450);
+      }, { passive: false });
+
+      let touchX = null;
+      courseViewport.addEventListener("touchstart", (e) => {
+        touchX = e.changedTouches[0].clientX;
+      }, { passive: true });
+      courseViewport.addEventListener("touchend", (e) => {
+        if (touchX == null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        touchX = null;
+        if (Math.abs(dx) < 40) return;
+        goCourse(courseIndex + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+
+      window.addEventListener("resize", () => updateCourseSlider());
+
+      /* ---------- Nav ---------- */
+      const nav = document.getElementById("nav");
+      const toggle = document.getElementById("navToggle");
+      const drawer = document.getElementById("mobileDrawer");
+      window.addEventListener("scroll", () => {
+        nav.classList.toggle("scrolled", window.scrollY > 12);
+      }, { passive: true });
+      toggle.addEventListener("click", () => {
+        const open = drawer.classList.toggle("open");
+        drawer.hidden = !open;
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      drawer.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => {
+        drawer.classList.remove("open");
+        drawer.hidden = true;
+        toggle.setAttribute("aria-expanded", "false");
+      }));
+
+      /* ---------- Form logic ---------- */
+      const form = document.getElementById("regForm");
+      let step = 1;
+      const wilaya = document.getElementById("wilaya");
+      wilaya.innerHTML = `<option value="">اختر الولاية...</option>` + CFG.wilayas.map(w => `<option value="${escapeHtml(w)}">${escapeHtml(w)}</option>`).join("");
+
+      const educationLevel = document.getElementById("educationLevel");
+      const studyYear = document.getElementById("studyYear");
+      educationLevel.addEventListener("change", () => {
+        const years = CFG.studyYears[educationLevel.value] || [];
+        studyYear.innerHTML = `<option value="">اختر...</option>` + years.map(y => `<option value="${escapeHtml(y)}">${escapeHtml(y)}</option>`).join("");
+      });
+
+      const category = document.getElementById("category");
+      const workshop = document.getElementById("workshop");
+      const freeWorkshop = CFG.freeLiveWorkshop || null;
+
+      function fillWorkshopOptions(cat) {
+        const list = CFG.courses[cat] || [];
+        const freeOpt = freeWorkshop
+          ? `<option value="${escapeHtml(freeWorkshop.id)}">✦ ${escapeHtml(freeWorkshop.name)} (مجانية)</option>`
+          : "";
+        workshop.innerHTML = `<option value="">اختر...</option>${freeOpt}` +
+          list.map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join("");
+      }
+
+      category.addEventListener("change", () => fillWorkshopOptions(category.value));
+
+      const sameWhatsapp = document.getElementById("sameWhatsapp");
+      const phone = document.getElementById("phone");
+      const whatsapp = document.getElementById("whatsapp");
+      sameWhatsapp.addEventListener("change", () => {
+        if (sameWhatsapp.checked) {
+          whatsapp.value = phone.value;
+          whatsapp.readOnly = true;
+        } else {
+          whatsapp.readOnly = false;
+        }
+      });
+      phone.addEventListener("input", () => {
+        if (sameWhatsapp.checked) whatsapp.value = phone.value;
+      });
+
+      function showStep(n) {
+        step = n;
+        document.querySelectorAll(".form-step").forEach((s) => {
+          s.classList.toggle("active", Number(s.dataset.step) === n);
+        });
+        document.querySelectorAll(".progress-step").forEach((p) => {
+          const pn = Number(p.dataset.p);
+          p.classList.toggle("active", pn === n);
+          p.classList.toggle("done", pn < n);
+        });
+        document.querySelectorAll(".progress-labels span").forEach((l) => {
+          l.classList.toggle("on", Number(l.dataset.pl) === n);
+        });
+        if (n === 3) renderSummary();
+      }
+
+      function fieldValue(id) { return (document.getElementById(id).value || "").trim(); }
+      function setError(name, msg) {
+        const el = document.querySelector(`[data-error="${name}"]`);
+        if (el) el.textContent = msg || "";
+      }
+      function clearErrors() {
+        document.querySelectorAll("[data-error]").forEach((e) => e.textContent = "");
+      }
+
+      function validPhone(v) {
+        const digits = v.replace(/[^\d+]/g, "");
+        return /^(\+?\d{8,15})$/.test(digits);
+      }
+
+      function validateStep(n) {
+        clearErrors();
+        let ok = true;
+        if (n === 1) {
+          if (!fieldValue("fullName")) { setError("fullName", "الاسم مطلوب"); ok = false; }
+          if (!fieldValue("phone")) { setError("phone", "رقم الهاتف مطلوب"); ok = false; }
+          else if (!validPhone(fieldValue("phone"))) { setError("phone", "رقم غير صالح"); ok = false; }
+          if (fieldValue("whatsapp") && !validPhone(fieldValue("whatsapp"))) { setError("whatsapp", "رقم واتساب غير صالح"); ok = false; }
+          if (!fieldValue("wilaya")) { setError("wilaya", "الولاية مطلوبة"); ok = false; }
+        }
+        if (n === 2) {
+          if (!fieldValue("educationLevel")) { setError("educationLevel", "المستوى مطلوب"); ok = false; }
+          if (!fieldValue("studyYear")) { setError("studyYear", "السنة مطلوبة"); ok = false; }
+        }
+        if (n === 3) {
+          ["category","workshop","format","schedule"].forEach((f) => {
+            if (!fieldValue(f)) { setError(f, "هذا الحقل مطلوب"); ok = false; }
+          });
+          if (!document.getElementById("consent").checked) {
+            setError("consent", "الموافقة مطلوبة للمتابعة");
+            ok = false;
+          }
+        }
+        return ok;
+      }
+
+      const labels = {
+        educationLevel: { primary: "ابتدائي", middle: "متوسط", secondary: "ثانوي", university: "جامعي", other: "أخرى" },
+        category: { mathematics: "الرياضيات", informatics: "الإعلام الآلي" },
+        format: { online: "عن بُعد", inperson: "حضوري" },
+        schedule: { morning: "صباحًا", afternoon: "بعد الظهر", evening: "مساءً", flexible: "مرن" }
+      };
+
+      function workshopName(cat, id) {
+        if (freeWorkshop && freeWorkshop.id === id) return freeWorkshop.name;
+        const item = (CFG.courses[cat] || []).find(c => c.id === id);
+        return item ? item.name : id;
+      }
+
+      function applyFreeWorkshopIntent() {
+        if (!freeWorkshop) return;
+        const cat = freeWorkshop.category || "mathematics";
+        category.value = cat;
+        fillWorkshopOptions(cat);
+        workshop.value = freeWorkshop.id;
+        const format = document.getElementById("format");
+        if (format && !format.value) format.value = "online";
+        showStep(3);
+        renderSummary();
+      }
+
+      /* ---------- Hot take + free live workshop CTA ---------- */
+      if (CFG.hotTake) {
+        setText("hotTakeEyebrow", CFG.hotTake.eyebrow || "Hot take");
+        setText("hotTakeTitle", CFG.hotTake.title);
+        setText("hotTakeText", CFG.hotTake.text);
+        setText("hotTakeNote", CFG.hotTake.note || "");
+        const cta = document.getElementById("freeWorkshopCta");
+        if (cta && CFG.hotTake.cta) cta.textContent = CFG.hotTake.cta;
+      }
+      document.getElementById("freeWorkshopCta")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        applyFreeWorkshopIntent();
+        document.getElementById("register")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      });
+
+      function collectPayload() {
+        const cat = fieldValue("category");
+        const ws = fieldValue("workshop");
+        return {
+          reference: "REG-" + Date.now().toString(36).toUpperCase(),
+          submittedAt: new Date().toISOString(),
+          submittedAtLocal: new Date().toLocaleString("ar-DZ"),
+          fullName: fieldValue("fullName"),
+          phone: fieldValue("phone"),
+          whatsapp: fieldValue("whatsapp") || fieldValue("phone"),
+          wilaya: fieldValue("wilaya"),
+          municipality: fieldValue("municipality"),
+          educationLevel: fieldValue("educationLevel"),
+          educationLevelLabel: labels.educationLevel[fieldValue("educationLevel")] || fieldValue("educationLevel"),
+          studyYear: fieldValue("studyYear"),
+          stream: fieldValue("stream"),
+          category: cat,
+          categoryLabel: labels.category[cat] || cat,
+          workshop: ws,
+          workshopLabel: workshopName(cat, ws),
+          format: fieldValue("format"),
+          formatLabel: labels.format[fieldValue("format")] || fieldValue("format"),
+          schedule: fieldValue("schedule"),
+          scheduleLabel: labels.schedule[fieldValue("schedule")] || fieldValue("schedule"),
+          message: fieldValue("message"),
+          source: "prof-rached-portfolio"
+        };
+      }
+
+      function renderSummary() {
+        const box = document.getElementById("summaryBox");
+        if (step !== 3) { box.hidden = true; return; }
+        const p = collectPayload();
+        box.hidden = false;
+        box.innerHTML = [
+          ["الاسم", p.fullName],
+          ["الهاتف", p.phone],
+          ["الولاية", p.wilaya],
+          ["المستوى", p.educationLevelLabel + " — " + p.studyYear],
+          ["الدورة", p.categoryLabel + " / " + p.workshopLabel],
+          ["الصيغة", p.formatLabel + " · " + p.scheduleLabel]
+        ].map(([k, v]) => `<div class="summary-row"><span>${k}</span><span>${escapeHtml(v || "—")}</span></div>`).join("");
+      }
+
+      form.querySelectorAll("[data-next]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (!validateStep(step)) return;
+          showStep(Math.min(3, step + 1));
+        });
+      });
+      form.querySelectorAll("[data-prev]").forEach((btn) => {
+        btn.addEventListener("click", () => showStep(Math.max(1, step - 1)));
+      });
+
+      ["fullName","phone","wilaya","educationLevel","studyYear","category","workshop","format","schedule"].forEach((id) => {
+        document.getElementById(id).addEventListener("change", () => { if (step === 3) renderSummary(); });
+        document.getElementById(id).addEventListener("input", () => { if (step === 3) renderSummary(); });
+      });
+
+      const statusEl = document.getElementById("formStatus");
+      const submitBtn = document.getElementById("submitBtn");
+      let submitting = false;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!validateStep(3) || submitting) return;
+        const payload = collectPayload();
+        submitting = true;
+        submitBtn.disabled = true;
+        submitBtn.textContent = "جارٍ الإرسال...";
+        statusEl.className = "form-status show";
+        statusEl.textContent = "يتم إرسال طلب التسجيل...";
+
+        try {
+          const result = await sendRegistration(payload);
+          document.getElementById("formWrapper").style.display = "none";
+          const success = document.getElementById("successScreen");
+          success.classList.add("show");
+          document.getElementById("refCode").textContent = payload.reference;
+
+          if (result.mode === "local") {
+            statusEl.className = "form-status show ok";
+            // kept hidden behind success UI
+          } else if (result.partial) {
+            alert("تم حفظ الطلب، لكن بعض قنوات الإشعار لم تكتمل. تحقق من إعدادات Webhook.");
+          }
+        } catch (err) {
+          console.error(err);
+          statusEl.className = "form-status show err";
+          statusEl.textContent = err.message || "تعذر إرسال الطلب. حاول مرة أخرى.";
+        } finally {
+          submitting = false;
+          submitBtn.disabled = false;
+          submitBtn.textContent = "إرسال طلب التسجيل";
+        }
+      });
+
+      async function sendRegistration(payload) {
+        const webhook = (CFG.webhookUrl || "").trim();
+        if (!webhook) {
+          // Local fallback for testing without automation credentials
+          const key = "prof_rached_registrations";
+          const existing = JSON.parse(localStorage.getItem(key) || "[]");
+          existing.push(payload);
+          localStorage.setItem(key, JSON.stringify(existing));
+          console.info("Registration stored locally. Configure SITE_CONFIG.webhookUrl for Telegram/WhatsApp delivery.", payload);
+          return { mode: "local", telegram: false, whatsapp: false };
+        }
+
+        const res = await fetch(webhook, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          throw new Error("فشل الإرسال إلى خدمة الإشعارات. تحقق من إعدادات Webhook.");
+        }
+
+        let data = {};
+        try { data = await res.json(); } catch (_) { data = { ok: true }; }
+
+        const telegramOk = data.telegram === true || data.telegram === "ok" || data.channels?.telegram === true;
+        const whatsappOk = data.whatsapp === true || data.whatsapp === "ok" || data.channels?.whatsapp === true;
+        const claimedBoth = data.telegramDelivered && data.whatsappDelivered;
+
+        // Do not claim dual delivery unless the automation reports it.
+        if (data.ok === false) throw new Error(data.message || "رفض الخادم الطلب.");
+
+        return {
+          mode: "webhook",
+          telegram: telegramOk || Boolean(data.ok),
+          whatsapp: whatsappOk,
+          partial: Boolean(data.partial) || (telegramOk && data.whatsapp === false) || (data.whatsappPending === true)
+        };
+      }
+
+      document.getElementById("newRegBtn").addEventListener("click", () => {
+        form.reset();
+        whatsapp.readOnly = false;
+        showStep(1);
+        document.getElementById("formWrapper").style.display = "";
+        document.getElementById("successScreen").classList.remove("show");
+        statusEl.className = "form-status";
+        statusEl.textContent = "";
+        document.getElementById("summaryBox").hidden = true;
+      });
+
+      /* ---------- Reveal / motion ---------- */
+      function initReveal() {
+        const els = document.querySelectorAll(".reveal");
+        if (reduceMotion || !("IntersectionObserver" in window)) {
+          els.forEach((el) => el.classList.add("in"));
+          return;
+        }
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in");
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+        els.forEach((el) => io.observe(el));
+      }
+      initReveal();
+
+      function initParallax() {
+        if (reduceMotion) return;
+        const stage = document.getElementById("heroStage");
+        const nodes = stage.querySelectorAll("[data-parallax]");
+        stage.addEventListener("pointermove", (e) => {
+          const rect = stage.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          nodes.forEach((node) => {
+            const depth = Number(node.dataset.parallax) || 10;
+            node.style.transform = `translate3d(${(-x * depth).toFixed(1)}px, ${(y * depth).toFixed(1)}px, 0)`;
+          });
+        });
+      }
+      initParallax();
+
+      function initGsap() {
+        if (reduceMotion || !window.gsap) return;
+        try {
+          if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+          gsap.from(".hero-copy > *", {
+            y: 28, opacity: 0, duration: 0.9, stagger: 0.08, ease: "power3.out", delay: 0.1
+          });
+          gsap.from(".hero-stage > *", {
+            scale: 0.92, opacity: 0, duration: 1, stagger: 0.06, ease: "power3.out", delay: 0.15
+          });
+          if (window.ScrollTrigger) {
+            if (courseViewport) {
+              gsap.from("#courseSlider", {
+                scrollTrigger: { trigger: "#courseSlider", start: "top 85%" },
+                y: 28, opacity: 0, duration: 0.8, ease: "power2.out"
+              });
+            }
+          }
+        } catch (err) {
+          console.warn("GSAP animation fallback active", err);
+        }
+      }
+      window.addEventListener("load", initGsap);
+
+      /* Privacy stub */
+      document.getElementById("privacy").innerHTML = `
+        <section class="section container">
+          <h2>سياسة الخصوصية</h2>
+          <p>نستخدم بيانات التسجيل فقط لمعالجة طلبك والتواصل معك. لا نبيع بياناتك لأطراف ثالثة.</p>
+        </section>`;
+      document.querySelector('a[href="#privacy"]').addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("نستخدم بيانات التسجيل فقط لمعالجة الطلب والتواصل معك. لا يتم بيع البيانات لأطراف ثالثة.");
+      });
+
+      function escapeHtml(str) {
+        return String(str ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      /* ---------- Social-proof signup toasts ---------- */
+      (function initSignupToasts() {
+        const conf = CFG.socialProof || {};
+        const toast = document.getElementById("signupToast");
+        const closeBtn = document.getElementById("signupToastClose");
+        if (!toast || !conf.names?.length) return;
+
+        const intervalMs = Number(conf.intervalMs) || 10 * 60 * 1000;
+        const firstDelayMs = Number(conf.firstDelayMs) || 18000;
+        const displayMs = Number(conf.displayMs) || 6500;
+        let hideTimer = null;
+        let paused = false;
+
+        const allCourses = [
+          ...(CFG.courses.mathematics || []),
+          ...(CFG.courses.informatics || []),
+          ...(freeWorkshop ? [freeWorkshop] : [])
+        ];
+        if (!allCourses.length) return;
+
+        const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        const initials = (name) => String(name).trim().slice(0, 1);
+
+        function hideToast() {
+          toast.classList.remove("is-visible");
+          window.setTimeout(() => { toast.hidden = true; }, 450);
+        }
+
+        function showToast() {
+          if (paused || document.hidden) return;
+          const name = pick(conf.names);
+          const city = pick(conf.cities || ["الجزائر"]);
+          const course = pick(allCourses);
+          const mins = pick([1, 2, 3, 4, 5, 7, 9]);
+
+          document.getElementById("signupToastAvatar").textContent = initials(name);
+          document.getElementById("signupToastName").textContent = `${name} من ${city}`;
+          document.getElementById("signupToastCourse").textContent = `سجّل في «${course.name}»`;
+          document.getElementById("signupToastMeta").textContent = mins <= 1 ? "منذ دقيقة" : `منذ ${mins} دقائق`;
+
+          toast.hidden = false;
+          requestAnimationFrame(() => toast.classList.add("is-visible"));
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(hideToast, displayMs);
+        }
+
+        closeBtn?.addEventListener("click", () => {
+          hideToast();
+          paused = true;
+          setTimeout(() => { paused = false; }, intervalMs);
+        });
+
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) hideToast();
+        });
+
+        setTimeout(showToast, firstDelayMs);
+        setInterval(showToast, intervalMs);
+      })();
+    })();
+  </script>
+</body>
+</html>
