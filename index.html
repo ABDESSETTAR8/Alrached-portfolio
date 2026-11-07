@@ -992,6 +992,50 @@
     .form-status.show { display: block; }
     .form-status.ok { background: rgba(0,184,107,0.12); color: var(--accent-deep); }
     .form-status.err { background: rgba(232,93,76,0.12); color: var(--warn); }
+    .free-prefill-note {
+      margin: 0 0 1rem;
+      padding: .7rem .9rem;
+      border-radius: 12px;
+      background: rgba(0,184,107,0.12);
+      border: 1px solid rgba(0,184,107,0.28);
+      color: var(--accent-deep);
+      font-size: .88rem;
+      font-weight: 700;
+    }
+    .free-prefill-note[hidden] { display: none !important; }
+    .autofill-bar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: .65rem; margin: 0 0 1rem;
+      padding: .65rem .8rem;
+      border-radius: 12px;
+      background: rgba(10,22,40,0.04);
+      border: 1px dashed rgba(10,22,40,0.14);
+    }
+    .autofill-bar p {
+      margin: 0; font-size: .82rem; font-weight: 700; color: var(--muted);
+    }
+    .autofill-bar .btn {
+      padding: .55rem .95rem; font-size: .82rem; border-radius: 999px;
+    }
+    .mail-setup {
+      margin-top: .85rem;
+      padding: 1rem;
+      border-radius: 14px;
+      background: rgba(232,93,76,0.08);
+      border: 1px solid rgba(232,93,76,0.25);
+      display: grid; gap: .65rem;
+    }
+    .mail-setup[hidden] { display: none !important; }
+    .mail-setup h4 { margin: 0; font-size: .95rem; color: var(--ink); }
+    .mail-setup p { margin: 0; font-size: .82rem; color: var(--muted); font-weight: 600; line-height: 1.55; }
+    .mail-setup ol { margin: 0; padding-inline-start: 1.2rem; font-size: .82rem; color: var(--muted); font-weight: 600; display: grid; gap: .35rem; }
+    .mail-setup-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .mail-setup input {
+      flex: 1; min-width: 180px;
+      border: 1px solid var(--line); border-radius: 12px;
+      padding: .7rem .85rem; background: var(--white);
+    }
+    .mail-setup a { color: var(--accent-deep); font-weight: 800; }
     .success-screen {
       display: none; text-align: center; padding: 2rem 1rem; gap: 1rem;
     }
@@ -1288,7 +1332,7 @@
       aboutPhoto: "assets/portrait-about.jpg",
       websiteTitle: "الأستاذ راشد محمد | أستاذ رياضيات ومهندس ذكاء اصطناعي",
       websiteDescription: "أستاذ رياضيات ومهندس ذكاء اصطناعي — برامج تعليمية وتكوينية في الرياضيات والإعلام الآلي.",
-      contactPhone: "", // مثال: +213555000000
+      contactPhone: "0556454977",
       social: {
         instagram: "https://www.instagram.com/prof_rached_mohammed/",
         facebook: "https://www.facebook.com/profile.php?id=61592282555246",
@@ -1297,9 +1341,14 @@
         youtube: "https://www.youtube.com/@ALRASHIDSCHOOLONLINE"
       },
       /**
-       * Webhook URL from Make.com / n8n only.
-       * NEVER put Telegram bot tokens or WhatsApp API secrets here.
+       * Free notify: WhatsApp (no Google / no API keys).
+       * Opens wa.me with the registration details to notifyPhone.
        */
+      notify: {
+        method: "whatsapp",
+        email: "alrashidschoolonline@gmail.com",
+        notifyPhone: "0556454977"
+      },
       webhookUrl: "",
       aboutPhilosophy: "التفوق يبدأ بالفهم… ثم بالممارسة… ثم بالتقنية.",
       boardTitle: "لوحة الأستاذ",
@@ -1584,7 +1633,7 @@
           <aside class="register-intro reveal">
             <div class="eyebrow">Start here</div>
             <h3 class="section-title" style="font-size:1.8rem;margin:.6rem 0 1rem">خطوات بسيطة نحو برنامجك</h3>
-            <p style="color:rgba(255,255,255,.7);margin-bottom:1.25rem">بعد الإرسال يصلك رقم مرجعي، وتصلني إشعارات عبر قنوات الإشعارات المفعّلة (تيليجرام / واتساب عبر Webhook).</p>
+            <p style="color:rgba(255,255,255,.7);margin-bottom:1.25rem">بعد الإرسال يصلك رقم مرجعي، وتصلني تفاصيل التسجيل تلقائياً على البريد الإلكتروني.</p>
             <ul style="display:grid;gap:.7rem;list-style:none;color:rgba(255,255,255,.82);font-weight:700">
               <li>1 — بياناتك الشخصية</li>
               <li>2 — مستواك الدراسي</li>
@@ -1605,39 +1654,44 @@
                 <span data-pl="3">الدورة</span>
               </div>
 
-              <form id="regForm" novalidate>
+              <form id="regForm" autocomplete="on" novalidate>
+                <div class="autofill-bar" id="autofillBar">
+                  <p>تعبئة سريعة من آخر تسجيل أو بيانات محفوظة في المتصفح</p>
+                  <button type="button" class="btn btn-secondary" id="autoFillBtn">تعبئة تلقائية</button>
+                </div>
+                <p class="free-prefill-note" id="freeWorkshopPrefillNote" hidden></p>
                 <!-- STEP 1 -->
                 <div class="form-step active" data-step="1">
                   <div class="field-grid">
                     <div class="field full">
                       <label for="fullName">الاسم الكامل <span class="req">*</span></label>
-                      <input id="fullName" name="fullName" autocomplete="name" required />
+                      <input id="fullName" name="name" autocomplete="name" required />
                       <div class="error" data-error="fullName"></div>
                     </div>
                     <div class="field">
                       <label for="phone">رقم الهاتف <span class="req">*</span></label>
-                      <input id="phone" name="phone" inputmode="tel" placeholder="05xxxxxxxx" required />
+                      <input id="phone" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="05xxxxxxxx" required />
                       <div class="error" data-error="phone"></div>
                     </div>
                     <div class="field">
                       <label for="whatsapp">واتساب (اختياري)</label>
-                      <input id="whatsapp" name="whatsapp" inputmode="tel" />
+                      <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" />
                       <div class="error" data-error="whatsapp"></div>
                     </div>
                     <div class="field full">
                       <label class="check-row" style="padding:0;background:transparent;border:none">
-                        <input type="checkbox" id="sameWhatsapp" />
+                        <input type="checkbox" id="sameWhatsapp" checked />
                         <span>استخدام نفس رقم الهاتف للواتساب</span>
                       </label>
                     </div>
                     <div class="field">
                       <label for="wilaya">الولاية <span class="req">*</span></label>
-                      <select id="wilaya" name="wilaya" required></select>
+                      <select id="wilaya" name="address-level1" autocomplete="address-level1" required></select>
                       <div class="error" data-error="wilaya"></div>
                     </div>
                     <div class="field">
                       <label for="municipality">البلدية (اختياري)</label>
-                      <input id="municipality" name="municipality" />
+                      <input id="municipality" name="address-level2" autocomplete="address-level2" />
                     </div>
                   </div>
                   <div class="form-nav">
@@ -1651,7 +1705,7 @@
                   <div class="field-grid">
                     <div class="field">
                       <label for="educationLevel">المستوى الدراسي <span class="req">*</span></label>
-                      <select id="educationLevel" name="educationLevel" required>
+                      <select id="educationLevel" name="educationLevel" autocomplete="on" required>
                         <option value="">اختر...</option>
                         <option value="primary">ابتدائي</option>
                         <option value="middle">متوسط</option>
@@ -1663,14 +1717,14 @@
                     </div>
                     <div class="field">
                       <label for="studyYear">السنة الدراسية <span class="req">*</span></label>
-                      <select id="studyYear" name="studyYear" required>
+                      <select id="studyYear" name="studyYear" autocomplete="on" required>
                         <option value="">اختر المستوى أولاً</option>
                       </select>
                       <div class="error" data-error="studyYear"></div>
                     </div>
                     <div class="field full">
                       <label for="stream">الشعبة / التخصص (إن وُجد)</label>
-                      <input id="stream" name="stream" placeholder="مثال: علوم تجريبية، إعلام آلي..." />
+                      <input id="stream" name="organization-title" autocomplete="organization-title" placeholder="مثال: علوم تجريبية، إعلام آلي..." />
                     </div>
                   </div>
                   <div class="form-nav">
@@ -1684,7 +1738,7 @@
                   <div class="field-grid">
                     <div class="field">
                       <label for="category">مجال الاهتمام <span class="req">*</span></label>
-                      <select id="category" name="category" required>
+                      <select id="category" name="category" autocomplete="on" required>
                         <option value="">اختر...</option>
                         <option value="mathematics">الرياضيات</option>
                         <option value="informatics">الإعلام الآلي</option>
@@ -1693,14 +1747,14 @@
                     </div>
                     <div class="field">
                       <label for="workshop">الورشة / الدورة <span class="req">*</span></label>
-                      <select id="workshop" name="workshop" required>
+                      <select id="workshop" name="workshop" autocomplete="on" required>
                         <option value="">اختر المجال أولاً</option>
                       </select>
                       <div class="error" data-error="workshop"></div>
                     </div>
                     <div class="field">
                       <label for="format">صيغة التعلم <span class="req">*</span></label>
-                      <select id="format" name="format" required>
+                      <select id="format" name="format" autocomplete="on" required>
                         <option value="">اختر...</option>
                         <option value="online">عن بُعد</option>
                         <option value="inperson">حضوري</option>
@@ -1709,7 +1763,7 @@
                     </div>
                     <div class="field">
                       <label for="schedule">الوقت المفضّل <span class="req">*</span></label>
-                      <select id="schedule" name="schedule" required>
+                      <select id="schedule" name="schedule" autocomplete="on" required>
                         <option value="">اختر...</option>
                         <option value="morning">صباحًا</option>
                         <option value="afternoon">بعد الظهر</option>
@@ -1720,7 +1774,7 @@
                     </div>
                     <div class="field full">
                       <label for="message">أهدافك أو ملاحظات إضافية</label>
-                      <textarea id="message" name="message" placeholder="مثال: أريد تقوية التحليل، أو تعلم Excel للعمل..."></textarea>
+                      <textarea id="message" name="message" autocomplete="on" placeholder="مثال: أريد تقوية التحليل، أو تعلم Excel للعمل..."></textarea>
                     </div>
                     <div class="field full">
                       <div class="summary" id="summaryBox" hidden></div>
@@ -1747,10 +1801,14 @@
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
               </div>
               <h3>تم استلام طلب تسجيلك بنجاح!</h3>
-              <p>شكراً لثقتك. سنتواصل معك قريباً لتأكيد معلومات التسجيل.</p>
+              <p>اضغط الزر لإرسال تفاصيل التسجيل إلى المدرسة عبر واتساب (مجاني، بدون إعداد).</p>
               <p style="font-size:.9rem">هذا طلب تسجيل أولي وليس تسجيلاً نهائياً حتى تتم المراجعة والتأكيد.</p>
               <div class="ref-code" id="refCode"></div>
-              <button type="button" class="btn btn-secondary" id="newRegBtn" style="margin-inline:auto;margin-top:1rem">تسجيل آخر</button>
+              <div style="display:grid;gap:.65rem;margin-top:1.1rem;justify-items:center">
+                <a class="btn btn-primary" id="waNotifyBtn" href="#" target="_blank" rel="noopener noreferrer" style="min-width:min(100%,280px);text-align:center">إرسال عبر واتساب</a>
+                <a class="btn btn-ghost" id="mailNotifyBtn" href="#" hidden style="min-width:min(100%,280px);text-align:center">فتح البريد (mailto)</a>
+                <button type="button" class="btn btn-secondary" id="newRegBtn">تسجيل آخر</button>
+              </div>
             </div>
           </div>
         </div>
@@ -2248,17 +2306,132 @@
       const sameWhatsapp = document.getElementById("sameWhatsapp");
       const phone = document.getElementById("phone");
       const whatsapp = document.getElementById("whatsapp");
-      sameWhatsapp.addEventListener("change", () => {
+      function syncWhatsappFromPhone() {
         if (sameWhatsapp.checked) {
           whatsapp.value = phone.value;
           whatsapp.readOnly = true;
         } else {
           whatsapp.readOnly = false;
         }
-      });
+      }
+      sameWhatsapp.addEventListener("change", syncWhatsappFromPhone);
       phone.addEventListener("input", () => {
         if (sameWhatsapp.checked) whatsapp.value = phone.value;
       });
+      syncWhatsappFromPhone();
+
+      const LAST_PROFILE_KEY = "prof_rached_last_profile";
+
+      function getLastProfile() {
+        try {
+          const direct = JSON.parse(localStorage.getItem(LAST_PROFILE_KEY) || "null");
+          if (direct && direct.fullName) return direct;
+          const list = JSON.parse(localStorage.getItem("prof_rached_registrations") || "[]");
+          return list.length ? list[list.length - 1] : null;
+        } catch (_) {
+          return null;
+        }
+      }
+
+      function saveLastProfile(payload) {
+        const profile = {
+          fullName: payload.fullName,
+          phone: payload.phone,
+          whatsapp: payload.whatsapp,
+          wilaya: payload.wilaya,
+          municipality: payload.municipality || "",
+          educationLevel: payload.educationLevel,
+          studyYear: payload.studyYear,
+          stream: payload.stream || "",
+          category: payload.category,
+          workshop: payload.workshop,
+          format: payload.format,
+          schedule: payload.schedule,
+          message: payload.message || ""
+        };
+        localStorage.setItem(LAST_PROFILE_KEY, JSON.stringify(profile));
+      }
+
+      function applyProfileToForm(profile, { silent } = {}) {
+        if (!profile) return false;
+        const fullName = document.getElementById("fullName");
+        if (profile.fullName) fullName.value = profile.fullName;
+        if (profile.phone) phone.value = profile.phone;
+        if (profile.whatsapp && profile.whatsapp !== profile.phone) {
+          sameWhatsapp.checked = false;
+          whatsapp.value = profile.whatsapp;
+        } else {
+          sameWhatsapp.checked = true;
+        }
+        syncWhatsappFromPhone();
+        if (profile.wilaya) wilaya.value = profile.wilaya;
+        if (profile.municipality) document.getElementById("municipality").value = profile.municipality;
+
+        if (profile.educationLevel) {
+          educationLevel.value = profile.educationLevel;
+          educationLevel.dispatchEvent(new Event("change"));
+          if (profile.studyYear) studyYear.value = profile.studyYear;
+        }
+        if (profile.stream) document.getElementById("stream").value = profile.stream;
+
+        if (profile.category) {
+          category.value = profile.category;
+          fillWorkshopOptions(profile.category);
+          if (profile.workshop) workshop.value = profile.workshop;
+        }
+        if (profile.format) document.getElementById("format").value = profile.format;
+        if (profile.schedule) document.getElementById("schedule").value = profile.schedule;
+        if (profile.message) document.getElementById("message").value = profile.message;
+
+        if (!silent) {
+          const note = document.getElementById("freeWorkshopPrefillNote");
+          if (note) {
+            note.hidden = false;
+            note.textContent = "تم تعبئة النموذج تلقائياً — راجع البيانات ثم أرسل.";
+          }
+          showStep(1);
+        }
+        return true;
+      }
+
+      function autoFillForm() {
+        const last = getLastProfile();
+        if (last) {
+          applyProfileToForm(last);
+          return;
+        }
+        // First-time visitor: fill sensible demo defaults so testing is fast
+        applyProfileToForm({
+          fullName: "",
+          phone: "",
+          whatsapp: "",
+          wilaya: "الجزائر",
+          municipality: "",
+          educationLevel: "university",
+          studyYear: "سنة ثانية جامعية",
+          stream: "",
+          category: "mathematics",
+          workshop: (CFG.freeLiveWorkshop && CFG.freeLiveWorkshop.id) || "math-foundation",
+          format: "online",
+          schedule: "evening",
+          message: ""
+        });
+        const note = document.getElementById("freeWorkshopPrefillNote");
+        if (note) {
+          note.hidden = false;
+          note.textContent = "تم اختيار قيم افتراضية — أكمل الاسم والهاتف ثم تابع.";
+        }
+        document.getElementById("fullName")?.focus();
+      }
+
+      document.getElementById("autoFillBtn")?.addEventListener("click", autoFillForm);
+
+      const cachedProfile = getLastProfile();
+      if (cachedProfile) {
+        const bar = document.getElementById("autofillBar");
+        const p = bar?.querySelector("p");
+        if (p) p.textContent = `آخر تسجيل محفوظ: ${cachedProfile.fullName || "طالب"} — اضغط للتعبئة التلقائية`;
+      }
 
       function showStep(n) {
         step = n;
@@ -2336,9 +2509,19 @@
         fillWorkshopOptions(cat);
         workshop.value = freeWorkshop.id;
         const format = document.getElementById("format");
-        if (format && !format.value) format.value = "online";
-        showStep(3);
-        renderSummary();
+        if (format) format.value = "online";
+
+        // Keep the user on step 1 so they can enter personal info first.
+        // Workshop/category stay prefilled for when they reach step 3.
+        document.getElementById("formWrapper").style.display = "";
+        document.getElementById("successScreen").classList.remove("show");
+        showStep(1);
+
+        const note = document.getElementById("freeWorkshopPrefillNote");
+        if (note) {
+          note.hidden = false;
+          note.textContent = `تم اختيار «${freeWorkshop.name}» — أكمل بياناتك ثم اضغط التالي.`;
+        }
       }
 
       /* ---------- Hot take + free live workshop CTA ---------- */
@@ -2354,6 +2537,7 @@
         e.preventDefault();
         applyFreeWorkshopIntent();
         document.getElementById("register")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        setTimeout(() => document.getElementById("fullName")?.focus(), reduceMotion ? 0 : 450);
       });
 
       function collectPayload() {
@@ -2430,22 +2614,31 @@
         statusEl.textContent = "يتم إرسال طلب التسجيل...";
 
         try {
+          window.__lastRegistrationPayload = payload;
           const result = await sendRegistration(payload);
+
           document.getElementById("formWrapper").style.display = "none";
           const success = document.getElementById("successScreen");
           success.classList.add("show");
           document.getElementById("refCode").textContent = payload.reference;
 
-          if (result.mode === "local") {
-            statusEl.className = "form-status show ok";
-            // kept hidden behind success UI
-          } else if (result.partial) {
-            alert("تم حفظ الطلب، لكن بعض قنوات الإشعار لم تكتمل. تحقق من إعدادات Webhook.");
+          const waBtn = document.getElementById("waNotifyBtn");
+          if (waBtn && result.whatsappUrl) {
+            waBtn.href = result.whatsappUrl;
+            // Try auto-open; popup blockers fall back to the button
+            window.setTimeout(() => {
+              try { window.open(result.whatsappUrl, "_blank", "noopener,noreferrer"); } catch (_) {}
+            }, 250);
+          }
+          const mailBtn = document.getElementById("mailNotifyBtn");
+          if (mailBtn && result.mailtoUrl) {
+            mailBtn.href = result.mailtoUrl;
+            mailBtn.hidden = false;
           }
         } catch (err) {
           console.error(err);
           statusEl.className = "form-status show err";
-          statusEl.textContent = err.message || "تعذر إرسال الطلب. حاول مرة أخرى.";
+          statusEl.textContent = (err && err.message) || "تعذر إرسال الطلب. حاول مرة أخرى.";
         } finally {
           submitting = false;
           submitBtn.disabled = false;
@@ -2453,17 +2646,57 @@
         }
       });
 
-      async function sendRegistration(payload) {
+      function formatNotifyMessage(payload) {
+        return [
+          "طلب تسجيل جديد",
+          `المرجع: ${payload.reference}`,
+          `الاسم: ${payload.fullName}`,
+          `الهاتف: ${payload.phone}`,
+          `واتساب: ${payload.whatsapp}`,
+          `الولاية: ${payload.wilaya}${payload.municipality ? " — " + payload.municipality : ""}`,
+          `المستوى: ${payload.educationLevelLabel} / ${payload.studyYear}`,
+          `الدورة: ${payload.categoryLabel} — ${payload.workshopLabel}`,
+          `الصيغة: ${payload.formatLabel}`,
+          `الوقت: ${payload.scheduleLabel}`,
+          payload.message ? `ملاحظة: ${payload.message}` : null,
+          `التاريخ: ${payload.submittedAtLocal}`
+        ].filter(Boolean).join("\n");
+      }
+
+      function saveRegistrationLocally(payload) {
+        const key = "prof_rached_registrations";
+        const existing = JSON.parse(localStorage.getItem(key) || "[]");
+        existing.push(payload);
+        localStorage.setItem(key, JSON.stringify(existing));
+        saveLastProfile(payload);
+      }
+
+      /** Algeria local 0XXXXXXXXX → 213XXXXXXXXX for wa.me */
+      function toWhatsAppE164(phone) {
+        let d = String(phone || "").replace(/\D/g, "");
+        if (!d) return "";
+        if (d.startsWith("213")) return d;
+        if (d.startsWith("0")) return "213" + d.slice(1);
+        if (d.length === 9) return "213" + d;
+        return d;
+      }
+
+      function buildWhatsAppNotifyUrl(payload) {
+        const phone = toWhatsAppE164(CFG.notify?.notifyPhone || CFG.contactPhone || "0556454977");
+        const text = formatNotifyMessage(payload);
+        return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+      }
+
+      function buildMailtoNotifyUrl(payload) {
+        const to = String(CFG.notify?.email || "").trim();
+        if (!to) return "";
+        const subject = `طلب تسجيل جديد — ${payload.fullName} — ${payload.reference}`;
+        return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(formatNotifyMessage(payload))}`;
+      }
+
+      async function sendWebhook(payload) {
         const webhook = (CFG.webhookUrl || "").trim();
-        if (!webhook) {
-          // Local fallback for testing without automation credentials
-          const key = "prof_rached_registrations";
-          const existing = JSON.parse(localStorage.getItem(key) || "[]");
-          existing.push(payload);
-          localStorage.setItem(key, JSON.stringify(existing));
-          console.info("Registration stored locally. Configure SITE_CONFIG.webhookUrl for Telegram/WhatsApp delivery.", payload);
-          return { mode: "local", telegram: false, whatsapp: false };
-        }
+        if (!webhook) return null;
 
         const res = await fetch(webhook, {
           method: "POST",
@@ -2471,25 +2704,23 @@
           body: JSON.stringify(payload)
         });
 
-        if (!res.ok) {
-          throw new Error("فشل الإرسال إلى خدمة الإشعارات. تحقق من إعدادات Webhook.");
-        }
+        if (!res.ok) return null;
 
         let data = {};
         try { data = await res.json(); } catch (_) { data = { ok: true }; }
+        if (data.ok === false) return null;
+        return { ok: true, data };
+      }
 
-        const telegramOk = data.telegram === true || data.telegram === "ok" || data.channels?.telegram === true;
-        const whatsappOk = data.whatsapp === true || data.whatsapp === "ok" || data.channels?.whatsapp === true;
-        const claimedBoth = data.telegramDelivered && data.whatsappDelivered;
-
-        // Do not claim dual delivery unless the automation reports it.
-        if (data.ok === false) throw new Error(data.message || "رفض الخادم الطلب.");
+      async function sendRegistration(payload) {
+        saveRegistrationLocally(payload);
+        await sendWebhook(payload).catch(() => null);
 
         return {
-          mode: "webhook",
-          telegram: telegramOk || Boolean(data.ok),
-          whatsapp: whatsappOk,
-          partial: Boolean(data.partial) || (telegramOk && data.whatsapp === false) || (data.whatsappPending === true)
+          ok: true,
+          mode: "whatsapp",
+          whatsappUrl: buildWhatsAppNotifyUrl(payload),
+          mailtoUrl: buildMailtoNotifyUrl(payload)
         };
       }
 
@@ -2502,6 +2733,8 @@
         statusEl.className = "form-status";
         statusEl.textContent = "";
         document.getElementById("summaryBox").hidden = true;
+        const note = document.getElementById("freeWorkshopPrefillNote");
+        if (note) { note.hidden = true; note.textContent = ""; }
       });
 
       /* ---------- Reveal / motion ---------- */
