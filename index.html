@@ -665,18 +665,24 @@
         scale(var(--fan-scale));
       z-index: var(--fan-z);
       transition:
-        transform .75s cubic-bezier(.22,1,.36,1),
-        box-shadow .75s cubic-bezier(.22,1,.36,1),
-        filter .75s ease,
-        opacity .55s ease;
-      filter: brightness(0.78) saturate(0.85);
+        transform .46s cubic-bezier(.16,1,.3,1),
+        box-shadow .46s cubic-bezier(.16,1,.3,1),
+        opacity .3s ease;
       opacity: 0.92;
       direction: rtl;
       -webkit-tap-highlight-color: transparent;
       will-change: transform;
+      backface-visibility: hidden;
     }
+    .course-card::after {
+      content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none;
+      border-radius: inherit; background: rgba(4, 10, 22, 0.34);
+      transition: opacity .3s ease;
+    }
+    .course-card.is-active::after { opacity: 0; }
+    /* Motion blur while the fan is moving (strength driven from JS) */
+    .course-track.is-moving .course-card:not(.is-hidden-fan) { filter: url(#courseMotionBlur); }
     .course-card.is-active {
-      filter: brightness(1) saturate(1);
       opacity: 1;
       box-shadow:
         0 36px 72px rgba(0,0,0,0.55),
@@ -702,7 +708,7 @@
     .course-card.is-active .course-body {
       opacity: 1;
       max-height: 220px;
-      transition: opacity .45s ease .1s, max-height .55s ease;
+      transition: opacity .28s ease .06s, max-height .34s cubic-bezier(.16,1,.3,1);
     }
     .course-cover {
       flex: 1;
@@ -713,6 +719,11 @@
         radial-gradient(circle at 30% 18%, color-mix(in srgb, var(--card-accent) 45%, transparent), transparent 52%),
         linear-gradient(160deg, #1a2b46 0%, #0d1628 55%, color-mix(in srgb, var(--card-accent) 40%, #0a1220));
     }
+    .course-cover-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+    }
+    .course-cover:has(.course-cover-img)::before { display: none; }
     .course-cover::before {
       content: attr(data-glyph);
       position: absolute; inset-inline-end: .7rem; bottom: -.35rem;
@@ -1581,6 +1592,11 @@
           <button class="cat-tab active" role="tab" aria-selected="true" data-cat="mathematics">الرياضيات</button>
           <button class="cat-tab" role="tab" aria-selected="false" data-cat="informatics">الإعلام الآلي</button>
         </div>
+        <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+          <filter id="courseMotionBlur" x="-25%" y="-5%" width="150%" height="110%" color-interpolation-filters="sRGB">
+            <feGaussianBlur id="courseMotionBlurFx" stdDeviation="0 0" />
+          </filter>
+        </svg>
         <div class="course-slider" id="courseSlider">
           <div class="course-viewport" id="courseViewport" aria-roledescription="carousel" aria-label="شرائح الدورات">
             <div class="course-track" id="courseTrack" role="tabpanel"></div>
@@ -2161,9 +2177,38 @@
         courseNext.disabled = courseIndex >= courseCount - 1;
       }
 
+      // Horizontal motion blur that peaks mid-move and fades as the cards settle.
+      const blurFx = document.getElementById("courseMotionBlurFx");
+      let blurRaf = 0;
+      let blurEnd = 0;
+      function kickMotionBlur(steps) {
+        if (reduceMotion || !blurFx) return;
+        const peak = Math.min(9, 3.5 + Math.abs(steps) * 2.2);
+        const dur = 420;
+        const start = performance.now();
+        blurEnd = start + dur;
+        courseTrack.classList.add("is-moving");
+        cancelAnimationFrame(blurRaf);
+        const tick = (now) => {
+          const k = Math.min(1, (now - start) / dur);
+          const v = peak * Math.sin(Math.PI * Math.min(1, k * 1.15)) * (1 - k);
+          blurFx.setAttribute("stdDeviation", `${Math.max(0, v).toFixed(2)} ${(Math.max(0, v) * 0.12).toFixed(2)}`);
+          if (now < blurEnd) {
+            blurRaf = requestAnimationFrame(tick);
+          } else {
+            blurFx.setAttribute("stdDeviation", "0 0");
+            courseTrack.classList.remove("is-moving");
+          }
+        };
+        blurRaf = requestAnimationFrame(tick);
+      }
+
       function goCourse(i) {
         if (!courseCount) return;
-        courseIndex = Math.max(0, Math.min(courseCount - 1, i));
+        const next = Math.max(0, Math.min(courseCount - 1, i));
+        if (next === courseIndex) return;
+        kickMotionBlur(next - courseIndex);
+        courseIndex = next;
         updateCourseSlider();
       }
 
@@ -2178,6 +2223,7 @@
         courseTrack.innerHTML = list.map((c, i) => `
           <article class="course-card" data-course-index="${i}" style="--card-accent:${accents[i % accents.length]}">
             <div class="course-cover" data-glyph="${escapeHtml(c.glyph || '•')}">
+              <img class="course-cover-img" src="${escapeHtml(c.image || `assets/courses/${c.id}.webp`)}" alt="" width="540" height="800" loading="${Math.abs(i - courseIndex) <= 3 ? "eager" : "lazy"}" decoding="async" onerror="this.remove()" />
               <span class="course-cover-badge">${cat === "mathematics" ? "رياضيات" : "إعلام آلي"}</span>
               <span class="course-index" dir="ltr">${String(i + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}</span>
             </div>
@@ -2247,7 +2293,7 @@
         if (wheelLock) return;
         wheelLock = true;
         goCourse(courseIndex + (delta > 0 ? 1 : -1));
-        setTimeout(() => { wheelLock = false; }, 450);
+        setTimeout(() => { wheelLock = false; }, 260);
       }, { passive: false });
 
       let touchX = null;
@@ -2259,7 +2305,8 @@
         const dx = e.changedTouches[0].clientX - touchX;
         touchX = null;
         if (Math.abs(dx) < 40) return;
-        goCourse(courseIndex + (dx < 0 ? 1 : -1));
+        const steps = Math.min(3, Math.max(1, Math.round(Math.abs(dx) / 140)));
+        goCourse(courseIndex + (dx < 0 ? steps : -steps));
       }, { passive: true });
 
       window.addEventListener("resize", () => updateCourseSlider());
