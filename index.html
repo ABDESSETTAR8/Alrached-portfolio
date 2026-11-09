@@ -625,9 +625,17 @@
       margin-inline: -0.5rem;
       overflow: visible;
       perspective: 1400px;
-      touch-action: pan-y;
+      touch-action: pan-y;            /* vertical = native page scroll, horizontal = slider */
+      overscroll-behavior-x: contain; /* no browser back-swipe / horizontal overscroll */
+      contain: layout style;          /* isolate the fan: moving cards don't repaint the section */
+      -webkit-user-select: none;
       user-select: none;
+      -webkit-touch-callout: none;
+      cursor: grab;
     }
+    .course-viewport:active { cursor: grabbing; }
+    .course-track.is-dragging .course-card { transition: none !important; }
+    .course-cover-img { -webkit-user-drag: none; pointer-events: none; }
     .course-track {
       position: relative;
       width: 100%;
@@ -2133,37 +2141,46 @@
       const coursePrev = document.getElementById("coursePrev");
       const courseNext = document.getElementById("courseNext");
 
+      // Fan geometry for a (possibly fractional) offset from the centre card.
+      // Continuous so cards can follow the finger 1:1 between positions.
+      let narrow = window.innerWidth < 700;
+      function fanSpacing() { return narrow ? 64 : 98; }
       function fanLayout(offset) {
         const abs = Math.abs(offset);
-        const dir = Math.sign(offset) || 0;
-        const narrow = window.innerWidth < 700;
-        const spacing = narrow ? 64 : 98;
         const drop = narrow ? 18 : 26;
         const rotStep = narrow ? 11 : 15;
+        const clamped = Math.max(-3, Math.min(3, offset));
         return {
-          x: `${dir * spacing * abs}px`,
-          y: `${abs * drop + abs * abs * 4}px`,
-          rot: `${dir * rotStep * Math.min(abs, 3)}deg`,
-          scale: abs === 0 ? 1 : Math.max(0.68, 0.9 - abs * 0.08),
-          z: 100 - abs * 10,
-          hidden: abs > 3
+          x: offset * fanSpacing(),
+          y: abs * drop + abs * abs * 4,
+          rot: clamped * rotStep,
+          scale: abs < 1 ? 1 - abs * 0.18 : Math.max(0.68, 0.9 - abs * 0.08),
+          z: 100 - Math.round(abs * 10),
+          fade: abs <= 3 ? 1 : Math.max(0, 4 - abs)
         };
       }
 
+      // Writes only GPU-friendly transform/opacity — no layout reads, no re-render.
+      function layoutCards(pos) {
+        const cards = courseTrack.children;
+        for (let i = 0; i < cards.length; i++) {
+          const f = fanLayout(i - pos);
+          const st = cards[i].style;
+          st.transform = `translate(-50%, -50%) translate3d(${f.x.toFixed(2)}px, ${f.y.toFixed(2)}px, 0) rotate(${f.rot.toFixed(2)}deg) scale(${f.scale.toFixed(4)})`;
+          st.zIndex = f.z;
+          st.opacity = f.fade < 1 ? (f.fade * 0.92).toFixed(3) : "";
+          cards[i].classList.toggle("is-hidden-fan", f.fade <= 0);
+        }
+      }
+
       function updateCourseSlider() {
-        const cards = courseTrack.querySelectorAll(".course-card");
-        cards.forEach((card, i) => {
-          const offset = i - courseIndex;
-          const fan = fanLayout(offset);
-          card.style.setProperty("--fan-x", fan.x);
-          card.style.setProperty("--fan-y", fan.y);
-          card.style.setProperty("--fan-rot", fan.rot);
-          card.style.setProperty("--fan-scale", String(fan.scale));
-          card.style.setProperty("--fan-z", String(fan.z));
-          card.classList.toggle("is-active", offset === 0);
-          card.classList.toggle("is-hidden-fan", fan.hidden);
-          card.setAttribute("aria-hidden", offset === 0 ? "false" : "true");
-        });
+        layoutCards(courseIndex);
+        const cards = courseTrack.children;
+        for (let i = 0; i < cards.length; i++) {
+          const on = i === courseIndex;
+          cards[i].classList.toggle("is-active", on);
+          cards[i].setAttribute("aria-hidden", on ? "false" : "true");
+        }
         courseDots.querySelectorAll(".course-dot").forEach((dot, i) => {
           const on = i === courseIndex;
           dot.classList.toggle("active", on);
@@ -2296,20 +2313,102 @@
         setTimeout(() => { wheelLock = false; }, 260);
       }, { passive: false });
 
-      let touchX = null;
-      courseViewport.addEventListener("touchstart", (e) => {
-        touchX = e.changedTouches[0].clientX;
-      }, { passive: true });
-      courseViewport.addEventListener("touchend", (e) => {
-        if (touchX == null) return;
-        const dx = e.changedTouches[0].clientX - touchX;
-        touchX = null;
-        if (Math.abs(dx) < 40) return;
-        const steps = Math.min(3, Math.max(1, Math.round(Math.abs(dx) / 140)));
-        goCourse(courseIndex + (dx < 0 ? steps : -steps));
+      /* Drag / swipe: cards track the pointer 1:1, then settle with velocity.
+         All listeners are passive; vertical gestures are left to native scrolling
+         (touch-action: pan-y), and DOM writes are batched to one per frame. */
+      const drag = { id: null, x0: 0, y0: 0, x: 0, start: 0, pos: 0, locked: false, samples: [], raf: 0 };
+      let suppressClick = false;
+
+      function renderDrag() {
+        drag.raf = 0;
+        if (!drag.locked) return;
+        let p = drag.start - (drag.x - drag.x0) / fanSpacing();
+        const max = courseCount - 1;
+        if (p < 0) p *= 0.35;                       // rubber-band past the ends
+        else if (p > max) p = max + (p - max) * 0.35;
+        drag.pos = p;
+        layoutCards(p);
+      }
+
+      function endDrag(e, commit) {
+        if (drag.raf) { cancelAnimationFrame(drag.raf); drag.raf = 0; }
+        const wasLocked = drag.locked;
+        drag.id = null;
+        drag.locked = false;
+        if (!wasLocked) return;
+        courseTrack.classList.remove("is-dragging");
+        suppressClick = true;
+        setTimeout(() => { suppressClick = false; }, 60);
+
+        let target = Math.round(drag.pos);
+        if (commit) {
+          const recent = drag.samples.filter((pt) => pt.t >= e.timeStamp - 100);
+          let v = 0; // px per ms
+          if (recent.length > 1) {
+            const a = recent[0], b = recent[recent.length - 1];
+            if (b.t > a.t) v = (b.x - a.x) / (b.t - a.t);
+          }
+          target = Math.round(drag.pos - (v * 180) / fanSpacing());
+        }
+        target = Math.max(0, Math.min(courseCount - 1, target));
+        if (Math.abs(target - drag.pos) > 0.3) kickMotionBlur(target - drag.pos);
+        courseIndex = target;
+        updateCourseSlider();
+      }
+
+      courseViewport.addEventListener("pointerdown", (e) => {
+        if (drag.id !== null || !courseCount) return;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        drag.id = e.pointerId;
+        drag.x0 = drag.x = e.clientX;
+        drag.y0 = e.clientY;
+        drag.start = drag.pos = courseIndex;
+        drag.locked = false;
+        drag.samples = [{ x: e.clientX, t: e.timeStamp }];
       }, { passive: true });
 
-      window.addEventListener("resize", () => updateCourseSlider());
+      courseViewport.addEventListener("pointermove", (e) => {
+        if (e.pointerId !== drag.id) return;
+        if (!drag.locked) {
+          const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+          if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+          if (Math.abs(dy) > Math.abs(dx)) { drag.id = null; return; } // vertical: native page scroll
+          drag.locked = true;
+          try { courseViewport.setPointerCapture(e.pointerId); } catch (_) {}
+          cancelAnimationFrame(blurRaf);
+          if (blurFx) blurFx.setAttribute("stdDeviation", "0 0");
+          courseTrack.classList.remove("is-moving");
+          courseTrack.classList.add("is-dragging");
+        }
+        drag.x = e.clientX;
+        drag.samples.push({ x: e.clientX, t: e.timeStamp });
+        if (drag.samples.length > 8) drag.samples.shift();
+        if (!drag.raf) drag.raf = requestAnimationFrame(renderDrag);
+      }, { passive: true });
+
+      courseViewport.addEventListener("pointerup", (e) => { if (e.pointerId === drag.id) endDrag(e, true); }, { passive: true });
+      courseViewport.addEventListener("pointercancel", (e) => { if (e.pointerId === drag.id) endDrag(e, false); }, { passive: true });
+      courseViewport.addEventListener("dragstart", (e) => e.preventDefault());
+      // A drag must not also count as a tap on a card or its button.
+      courseTrack.addEventListener("click", (e) => {
+        if (!suppressClick) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }, true);
+
+      // Mobile URL-bar show/hide fires resize while scrolling: only re-layout
+      // when the fan geometry actually changes, at most once per frame.
+      let resizeRaf = 0;
+      window.addEventListener("resize", () => {
+        if (resizeRaf) return;
+        resizeRaf = requestAnimationFrame(() => {
+          resizeRaf = 0;
+          const n = window.innerWidth < 700;
+          if (n === narrow) return;
+          narrow = n;
+          layoutCards(drag.locked ? drag.pos : courseIndex);
+        });
+      }, { passive: true });
 
       /* ---------- Nav ---------- */
       const nav = document.getElementById("nav");
