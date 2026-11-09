@@ -640,7 +640,7 @@
       position: relative;
       width: 100%;
       height: 100%;
-      transform-style: preserve-3d;
+      transform-style: flat;
     }
     .course-card {
       --card-accent: var(--accent);
@@ -674,7 +674,6 @@
       z-index: var(--fan-z);
       transition:
         transform .46s cubic-bezier(.16,1,.3,1),
-        box-shadow .46s cubic-bezier(.16,1,.3,1),
         opacity .3s ease;
       opacity: 0.92;
       direction: rtl;
@@ -688,8 +687,6 @@
       transition: opacity .3s ease;
     }
     .course-card.is-active::after { opacity: 0; }
-    /* Motion blur while the fan is moving (strength driven from JS) */
-    .course-track.is-moving .course-card:not(.is-hidden-fan) { filter: url(#courseMotionBlur); }
     .course-card.is-active {
       opacity: 1;
       box-shadow:
@@ -702,26 +699,24 @@
       pointer-events: none;
       visibility: hidden;
     }
+    /* Front-card reveal uses only transform/opacity (GPU) — no layout per frame. */
     .course-card:not(.is-active) .course-body {
       opacity: 0;
-      max-height: 0;
-      padding-top: 0;
-      padding-bottom: 0;
-      border: none;
+      transform: translateY(24px);
+      visibility: hidden;
       pointer-events: none;
-    }
-    .course-card:not(.is-active) .course-cover {
-      flex: 1;
+      transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
     }
     .course-card.is-active .course-body {
       opacity: 1;
-      max-height: 220px;
-      transition: opacity .28s ease .06s, max-height .34s cubic-bezier(.16,1,.3,1);
+      transform: none;
+      visibility: visible;
+      transition: opacity .28s ease .06s, transform .34s cubic-bezier(.16,1,.3,1) .02s, visibility 0s;
     }
+    .course-card.is-active .course-cover-img { transform: translateY(calc(var(--body-h, 220px) / -2)); }
     .course-cover {
-      flex: 1;
-      min-height: 0;
-      position: relative;
+      position: absolute;
+      inset: 0;
       overflow: hidden;
       background:
         radial-gradient(circle at 30% 18%, color-mix(in srgb, var(--card-accent) 45%, transparent), transparent 52%),
@@ -730,6 +725,7 @@
     .course-cover-img {
       position: absolute; inset: 0; width: 100%; height: 100%;
       object-fit: cover; object-position: center;
+      transition: transform .46s cubic-bezier(.16,1,.3,1);
     }
     .course-cover:has(.course-cover-img)::before { display: none; }
     .course-cover::before {
@@ -740,17 +736,18 @@
     }
     .course-cover-badge {
       position: absolute; top: 1rem; inset-inline-start: 1rem;
-      background: rgba(10,22,40,0.72); color: var(--white);
+      background: rgba(10,22,40,0.86); color: var(--white);
       border: 1px solid rgba(255,255,255,0.15);
       padding: .3rem .7rem; border-radius: 999px; font-size: .72rem; font-weight: 800;
-      backdrop-filter: blur(8px);
+      z-index: 1;
     }
     .course-index {
-      position: absolute; bottom: 1rem; inset-inline-end: 1rem;
+      position: absolute; top: 1.35rem; left: 1rem; z-index: 1;
       font-family: var(--font-en); font-size: .78rem; font-weight: 700;
       color: rgba(255,255,255,0.55); letter-spacing: .08em;
     }
     .course-body {
+      position: absolute; inset-inline: 0; bottom: 0; z-index: 2;
       padding: 1.05rem 1.1rem 1.2rem;
       display: grid; gap: .55rem;
       background: linear-gradient(180deg, rgba(8,16,30,0.92), #0a1424);
@@ -807,7 +804,7 @@
       width: 9px; height: 9px; border-radius: 999px;
       border: none; padding: 0; cursor: pointer;
       background: rgba(255,255,255,0.25);
-      transition: transform .25s, background .25s, width .25s;
+      transition: background .25s;
     }
     .course-dot.active {
       background: var(--accent);
@@ -1319,6 +1316,7 @@
       .hero-stage { height: 460px; margin-top: 1rem; }
     }
     @media (max-width: 640px) {
+      .course-body p { -webkit-line-clamp: 1; }
       .why-grid, .social-grid, .field-grid { grid-template-columns: 1fr; }
       .hero { padding-top: calc(var(--nav-h) + 1.5rem); }
       .section { padding: 4.25rem 0; }
@@ -1600,11 +1598,6 @@
           <button class="cat-tab active" role="tab" aria-selected="true" data-cat="mathematics">الرياضيات</button>
           <button class="cat-tab" role="tab" aria-selected="false" data-cat="informatics">الإعلام الآلي</button>
         </div>
-        <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-          <filter id="courseMotionBlur" x="-25%" y="-5%" width="150%" height="110%" color-interpolation-filters="sRGB">
-            <feGaussianBlur id="courseMotionBlurFx" stdDeviation="0 0" />
-          </filter>
-        </svg>
         <div class="course-slider" id="courseSlider">
           <div class="course-viewport" id="courseViewport" aria-roledescription="carousel" aria-label="شرائح الدورات">
             <div class="course-track" id="courseTrack" role="tabpanel"></div>
@@ -2173,6 +2166,19 @@
         }
       }
 
+      // Read once (not during animation) how tall each card's text panel is,
+      // so the active card's picture can be centred in the space above it.
+      function measureCourseBodies() {
+        const cards = courseTrack.children;
+        const h = [];
+        for (let i = 0; i < cards.length; i++) {
+          const body = cards[i].querySelector(".course-body");
+          h.push(body ? body.offsetHeight : 0);
+        }
+        for (let i = 0; i < cards.length; i++) cards[i].style.setProperty("--body-h", `${h[i]}px`);
+      }
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => measureCourseBodies());
+
       function updateCourseSlider() {
         layoutCards(courseIndex);
         const cards = courseTrack.children;
@@ -2194,30 +2200,25 @@
         courseNext.disabled = courseIndex >= courseCount - 1;
       }
 
-      // Horizontal motion blur that peaks mid-move and fades as the cards settle.
-      const blurFx = document.getElementById("courseMotionBlurFx");
-      let blurRaf = 0;
-      let blurEnd = 0;
+      // Motion blur: one GPU-composited CSS filter animation on the whole track
+      // (no per-frame JS, no SVG filter, no re-raster of the cards).
+      let blurAnim = null;
+      function stopMotionBlur() {
+        if (blurAnim) { blurAnim.cancel(); blurAnim = null; }
+      }
       function kickMotionBlur(steps) {
-        if (reduceMotion || !blurFx) return;
-        const peak = Math.min(9, 3.5 + Math.abs(steps) * 2.2);
-        const dur = 420;
-        const start = performance.now();
-        blurEnd = start + dur;
-        courseTrack.classList.add("is-moving");
-        cancelAnimationFrame(blurRaf);
-        const tick = (now) => {
-          const k = Math.min(1, (now - start) / dur);
-          const v = peak * Math.sin(Math.PI * Math.min(1, k * 1.15)) * (1 - k);
-          blurFx.setAttribute("stdDeviation", `${Math.max(0, v).toFixed(2)} ${(Math.max(0, v) * 0.12).toFixed(2)}`);
-          if (now < blurEnd) {
-            blurRaf = requestAnimationFrame(tick);
-          } else {
-            blurFx.setAttribute("stdDeviation", "0 0");
-            courseTrack.classList.remove("is-moving");
-          }
-        };
-        blurRaf = requestAnimationFrame(tick);
+        if (reduceMotion || typeof courseTrack.animate !== "function") return;
+        const peak = Math.min(4, 1.6 + Math.abs(steps) * 0.9);
+        stopMotionBlur();
+        blurAnim = courseTrack.animate(
+          [
+            { filter: "blur(0px)" },
+            { filter: `blur(${peak.toFixed(2)}px)`, offset: 0.3 },
+            { filter: "blur(0px)" }
+          ],
+          { duration: 420, easing: "cubic-bezier(.16,1,.3,1)" }
+        );
+        blurAnim.onfinish = () => { blurAnim = null; };
       }
 
       function goCourse(i) {
@@ -2259,6 +2260,7 @@
         courseDots.innerHTML = list.map((_, i) =>
           `<button type="button" class="course-dot${i === courseIndex ? " active" : ""}" data-index="${i}" aria-label="الانتقال إلى الورشة ${i + 1}"></button>`
         ).join("");
+        measureCourseBodies();
         updateCourseSlider();
       }
       renderCourses("mathematics");
@@ -2375,9 +2377,7 @@
           if (Math.abs(dy) > Math.abs(dx)) { drag.id = null; return; } // vertical: native page scroll
           drag.locked = true;
           try { courseViewport.setPointerCapture(e.pointerId); } catch (_) {}
-          cancelAnimationFrame(blurRaf);
-          if (blurFx) blurFx.setAttribute("stdDeviation", "0 0");
-          courseTrack.classList.remove("is-moving");
+          stopMotionBlur();
           courseTrack.classList.add("is-dragging");
         }
         drag.x = e.clientX;
@@ -2398,14 +2398,18 @@
 
       // Mobile URL-bar show/hide fires resize while scrolling: only re-layout
       // when the fan geometry actually changes, at most once per frame.
+      const widthBucket = () => { const w = window.innerWidth; return w <= 640 ? 0 : w < 700 ? 1 : w <= 980 ? 2 : 3; };
+      let bucket = widthBucket();
       let resizeRaf = 0;
       window.addEventListener("resize", () => {
         if (resizeRaf) return;
         resizeRaf = requestAnimationFrame(() => {
           resizeRaf = 0;
-          const n = window.innerWidth < 700;
-          if (n === narrow) return;
-          narrow = n;
+          const nb = widthBucket();
+          if (nb === bucket) return;
+          bucket = nb;
+          narrow = window.innerWidth < 700;
+          measureCourseBodies();
           layoutCards(drag.locked ? drag.pos : courseIndex);
         });
       }, { passive: true });
